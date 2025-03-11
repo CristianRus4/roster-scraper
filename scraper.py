@@ -207,7 +207,6 @@ def generate_ics(shifts):
                 logger.info(f"Loaded existing calendar with {len(existing_cal.events)} events")
     except Exception as e:
         logger.error(f"Error reading existing calendar: {str(e)}")
-        # Continue with empty calendar if we can't read the existing one
     
     # Create a new calendar for the current shifts
     cal = Calendar()
@@ -218,104 +217,53 @@ def generate_ics(shifts):
             date_str, times_str = shift
             logger.info(f"Processing shift: {date_str} - {times_str}")
             
+            # Parse the date string first
+            try:
+                # date_str format should be DD/MM/YYYY
+                day, month, year = map(int, date_str.split('/'))
+                logger.info(f"Parsed date components: day={day}, month={month}, year={year}")
+            except Exception as e:
+                logger.error(f"Error parsing date string {date_str}: {str(e)}")
+                continue
+            
             # Handle arrow format (→ or ->)
             if "→" in times_str:
                 parts = times_str.split("→")
-                start_time = parts[0].strip()
-                end_time = parts[1].strip()
-                
-                # Handle case where there's a role/description after the time
-                if " " in end_time:
-                    end_parts = end_time.split(" ", 1)
-                    end_time = end_parts[0].strip()
-                    role = end_parts[1].strip()
-                else:
-                    role = ""
-                    
-                logger.info(f"Parsed arrow format: start={start_time}, end={end_time}, role={role}")
-                
             elif "->" in times_str:
                 parts = times_str.split("->")
-                start_time = parts[0].strip()
-                end_time = parts[1].strip()
-                
-                # Handle case where there's a role/description after the time
-                if " " in end_time:
-                    end_parts = end_time.split(" ", 1)
-                    end_time = end_parts[0].strip()
-                    role = end_parts[1].strip()
-                else:
-                    role = ""
-                    
-                logger.info(f"Parsed arrow format: start={start_time}, end={end_time}, role={role}")
-                
             elif " - " in times_str:
                 parts = times_str.split(" - ")
-                start_time = parts[0].strip()
-                end_time = parts[1].strip()
-                
-                # Handle case where there's a role/description after the time
-                if " " in end_time:
-                    end_parts = end_time.split(" ", 1)
-                    end_time = end_parts[0].strip()
-                    role = end_parts[1].strip()
-                else:
-                    role = ""
-                    
-                logger.info(f"Parsed dash format: start={start_time}, end={end_time}, role={role}")
-                
             else:
                 logger.warning(f"Could not parse time format: {times_str}")
                 continue
             
-            # Try different date formats
-            date_formats = ["%d/%m/%Y", "%m/%d/%Y", "%Y-%m-%d"]
-            start_dt = None
+            start_time = parts[0].strip()
+            end_time = parts[1].strip()
             
-            # If date is "Unknown Date", use today's date
-            if date_str == "Unknown Date":
-                today = datetime.datetime.now()
-                date_str = today.strftime("%d/%m/%Y")
-                logger.info(f"Using today's date: {date_str}")
+            # Handle case where there's a role/description after the time
+            role = ""
+            if " " in end_time:
+                end_parts = end_time.split(" ", 1)
+                end_time = end_parts[0].strip()
+                role = end_parts[1].strip()
             
-            for date_format in date_formats:
+            logger.info(f"Parsed times: start={start_time}, end={end_time}, role={role}")
+            
+            # Parse the times
+            try:
+                # Create datetime objects with the correct date
+                start_dt = datetime.datetime.strptime(f"{day:02d}/{month:02d}/{year} {start_time}", "%d/%m/%Y %I:%M%p")
+                end_dt = datetime.datetime.strptime(f"{day:02d}/{month:02d}/{year} {end_time}", "%d/%m/%Y %I:%M%p")
+            except ValueError:
                 try:
-                    # Try parsing the start time
-                    start_dt = datetime.datetime.strptime(f"{date_str} {start_time}", f"{date_format} %I:%M%p")
-                    
-                    # Try parsing the end time
-                    end_dt = datetime.datetime.strptime(f"{date_str} {end_time}", f"{date_format} %I:%M%p")
-                    
-                    logger.info(f"Successfully parsed dates with format {date_format}")
-                    break
-                except ValueError:
-                    try:
-                        # Try with a space before am/pm
-                        start_dt = datetime.datetime.strptime(f"{date_str} {start_time}", f"{date_format} %I:%M %p")
-                        end_dt = datetime.datetime.strptime(f"{date_str} {end_time}", f"{date_format} %I:%M %p")
-                        logger.info(f"Successfully parsed dates with format {date_format} and space before am/pm")
-                        break
-                    except ValueError:
-                        continue
-            
-            if not start_dt:
-                logger.warning(f"Could not parse date: {date_str}")
-                # Try one more approach - extract just the times and use today's date
-                try:
-                    # Extract just the time part
-                    start_time_only = ''.join(c for c in start_time if c.isdigit() or c == ':' or c.lower() in 'apm')
-                    end_time_only = ''.join(c for c in end_time if c.isdigit() or c == ':' or c.lower() in 'apm')
-                    
-                    # Add today's date
-                    today = datetime.datetime.now()
-                    start_dt = datetime.datetime.combine(today.date(), 
-                                                        datetime.datetime.strptime(start_time_only, "%I:%M%p").time())
-                    end_dt = datetime.datetime.combine(today.date(), 
-                                                     datetime.datetime.strptime(end_time_only, "%I:%M%p").time())
-                    logger.info(f"Using extracted times with today's date: {start_dt} - {end_dt}")
-                except Exception as e:
-                    logger.error(f"Failed alternate time parsing: {str(e)}")
+                    # Try with a space before am/pm
+                    start_dt = datetime.datetime.strptime(f"{day:02d}/{month:02d}/{year} {start_time}", "%d/%m/%Y %I:%M %p")
+                    end_dt = datetime.datetime.strptime(f"{day:02d}/{month:02d}/{year} {end_time}", "%d/%m/%Y %I:%M %p")
+                except ValueError as e:
+                    logger.error(f"Error parsing times: {str(e)}")
                     continue
+            
+            logger.info(f"Created datetime objects: start={start_dt}, end={end_dt}")
             
             # Handle case where shift ends next day
             if end_dt < start_dt:
@@ -351,20 +299,31 @@ def generate_ics(shifts):
             logger.error(f"Error processing shift {shift}: {str(e)}")
             traceback.print_exc()
     
-    # Merge with existing calendar to avoid duplicates
+    # Create a new calendar for the final events
+    final_cal = Calendar()
+    
+    # Add all new events
+    for event in cal.events:
+        final_cal.events.add(event)
+    
     # Add events from existing calendar that aren't in the new calendar
     for event in existing_cal.events:
         if event.uid not in {e.uid for e in cal.events}:
-            # Update any existing event names from "Work Shift - Loaded" to "Chou chou"
+            # Always update the name to "Chou chou" regardless of the original name
             if "Work Shift - Loaded" in event.name:
-                event.name = event.name.replace("Work Shift - Loaded", "Chou chou")
-            cal.events.add(event)
+                role = ""
+                if "(" in event.name and ")" in event.name:
+                    role_start = event.name.find("(")
+                    role_end = event.name.find(")") + 1
+                    role = event.name[role_start:role_end]
+                event.name = f"Chou chou {role}".strip()
+            final_cal.events.add(event)
     
-    logger.info(f"Final calendar has {len(cal.events)} events")
+    logger.info(f"Final calendar has {len(final_cal.events)} events")
     
     # Write the calendar to file
     with open("roster.ics", "w") as f:
-        f.write(str(cal))
+        f.write(str(final_cal))
     
     logger.info("ICS file updated successfully")
     
