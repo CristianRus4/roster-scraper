@@ -14,26 +14,83 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for proper Git operations
      
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install Chrome
+        run: |
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          # Verify Chrome is installed and get version
+          google-chrome --version
 
       - name: Install dependencies
         run: |
+          pip install --upgrade pip
           pip install selenium webdriver-manager ics
           
       - name: Run scraper
         run: python scraper.py
+        continue-on-error: true  # Don't fail the workflow if the scraper encounters an issue
+        
+      - name: Debug information
+        if: always()
+        run: |
+          echo "==== Directory contents ===="
+          ls -la
+          echo "==== Roster ICS file status ===="
+          if [ -f roster.ics ]; then
+            echo "roster.ics exists"
+            echo "File size: $(wc -c < roster.ics) bytes"
+            head -n 20 roster.ics
+          else
+            echo "roster.ics does not exist"
+          fi
+          echo "==== Git status ===="
+          git status
+        
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if [[ -n $(git status --porcelain roster.ics) ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected in roster.ics"
+          else
+            echo "No changes detected in roster.ics"
+          fi
        
       - name: Commit and push changes
+        if: steps.check_changes.outputs.changes == 'true'
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
           git add roster.ics
-          git commit -m "Updated roster"
+          git commit -m "Updated roster with shifts for $(date +'%Y-%m-%d')"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: No changes found
+        if: steps.check_changes.outputs.changes != 'true'
+        run: echo "No changes to roster found - this is normal if there are no new shifts or the scraper couldn't extract data"
+        
+      - name: Upload debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-artifacts
+          path: |
+            debug_screenshot.png
+            timeout_error.png
+            page_source.html
+            roster.ics
+          if-no-files-found: ignore
