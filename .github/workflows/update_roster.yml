@@ -35,8 +35,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          python -m pip install pytz==2024.1
+          python -m pip install -r requirements.txt
+          python -c "import sys; print('Python path:', sys.path)"
+          python -c "import pkg_resources; print('Installed packages:', [p.key for p in pkg_resources.working_set])"
+          python -c "import pytz; print('pytz version:', pytz.__version__)"
           
       - name: Run scraper
         run: python scraper.py
