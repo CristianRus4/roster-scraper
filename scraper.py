@@ -70,33 +70,48 @@ def extract_shifts():
         
         for row in rows:
             if "Cristian Rus" in row.text:
-                cells = row.find_elements(By.CSS_SELECTOR, "td div.week-shift")
+                # Get all cells for the week, not just those with shifts
+                cells = row.find_elements(By.CSS_SELECTOR, "td")
                 day_index = 0
                 
                 for cell in cells:
-                    day_name = list(dates.keys())[day_index]
+                    # Skip the first cell which contains the name
+                    if day_index == 0:
+                        day_index += 1
+                        continue
+                        
+                    # Adjust day_index since we skipped the first cell
+                    current_day_index = day_index - 1
+                    if current_day_index >= len(dates):
+                        break
+                        
+                    day_name = list(dates.keys())[current_day_index]
                     day_num, month = dates[day_name]
                     year = 2025  # From the HTML we can see it's 2025
                     
-                    shift_text = cell.get_attribute("uib-tooltip-html")
-                    if shift_text:
-                        # Extract role and time
-                        match = re.search(r"'FOH - (.+)'", shift_text)
-                        if match:
-                            time_text = match.group(1)
-                            role = ""
-                            
-                            # Check for role in the cell text
-                            role_div = cell.find_element(By.CSS_SELECTOR, "div.shift-jobs").text
-                            if role_div:
-                                role = role_div
-                            
-                            shifts.append({
-                                'date': f"{day_num:02d}/{month:02d}/{year}",
-                                'shift': time_text,
-                                'role': role,
-                                'day_name': day_name
-                            })
+                    # Look for shift information within the cell
+                    shift_div = cell.find_elements(By.CSS_SELECTOR, "div.week-shift")
+                    if shift_div:
+                        shift_text = shift_div[0].get_attribute("uib-tooltip-html")
+                        if shift_text:
+                            # Extract role and time
+                            match = re.search(r"'FOH - (.+)'", shift_text)
+                            if match:
+                                time_text = match.group(1)
+                                role = ""
+                                
+                                # Check for role in the cell text
+                                role_divs = shift_div[0].find_elements(By.CSS_SELECTOR, "div.shift-jobs")
+                                if role_divs:
+                                    role = role_divs[0].text
+                                
+                                shifts.append({
+                                    'date': f"{day_num:02d}/{month:02d}/{year}",
+                                    'shift': time_text,
+                                    'role': role,
+                                    'day_name': day_name
+                                })
+                    
                     day_index += 1
         
         return shifts
