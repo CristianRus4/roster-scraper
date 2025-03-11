@@ -33,7 +33,7 @@ def get_shifts():
     
     driver.quit()
     return shifts
-
+print(f"DEBUG: extracted shifts = {shifts}")
 def generate_ics(shifts):
     cal = Calendar()
     
