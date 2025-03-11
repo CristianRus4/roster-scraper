@@ -88,142 +88,73 @@ def get_shifts():
             driver.save_screenshot("page_screenshot.png")
             logger.info("Saved screenshot for debugging")
             
-            # Direct parsing approach - search for "Cristian Rus" in the page
-            page_source = driver.page_source
+            # Extract date headers from the table
+            date_headers = {}
+            try:
+                # Find table headers
+                headers = driver.find_elements(By.TAG_NAME, "th")
+                current_year = datetime.datetime.now().year
+                
+                for header in headers:
+                    header_text = header.text.strip()
+                    if any(day in header_text for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']):
+                        # Extract the date from format like "Monday 10th Mar"
+                        day_match = re.search(r'(\d+)(?:st|nd|rd|th)\s+([A-Za-z]+)', header_text)
+                        if day_match:
+                            day = int(day_match.group(1))
+                            month = day_match.group(2)
+                            # Convert month name to number
+                            month_num = {
+                                'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
+                                'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12
+                            }[month[:3]]
+                            date_str = f"{day:02d}/{month_num:02d}/{current_year}"
+                            date_headers[header_text.split()[0]] = date_str
+                            logger.info(f"Found date header: {header_text} -> {date_str}")
+                
+                logger.info(f"Extracted date headers: {date_headers}")
+            except Exception as e:
+                logger.error(f"Error extracting date headers: {str(e)}")
+                date_headers = {}
+            
             shifts = []
             
-            # Method 1: Look for Cristian Rus in the page and extract surrounding elements
-            if "Cristian Rus" in page_source:
-                logger.info("Found 'Cristian Rus' in page source")
-                
-                # Try to find all shift elements using various methods
+            # Find rows containing "Cristian Rus"
+            rows = driver.find_elements(By.TAG_NAME, "tr")
+            for row in rows:
                 try:
-                    # Try direct XPath approach
-                    cristian_elements = driver.find_elements(By.XPATH, "//*[contains(text(), 'Cristian Rus')]/ancestor::tr")
-                    logger.info(f"Found {len(cristian_elements)} elements containing 'Cristian Rus' using XPath")
-                    
-                    for elem in cristian_elements:
-                        try:
-                            # Extract shift information
-                            elem_html = elem.get_attribute('outerHTML')
-                            logger.info(f"Shift element HTML: {elem_html[:200]}...")
+                    if "Cristian Rus" in row.text:
+                        # Get all cells in the row
+                        cells = row.find_elements(By.TAG_NAME, "td")
+                        
+                        # Find which day this shift is for
+                        day_cell = cells[0].text.strip()  # First cell should contain the day
+                        if day_cell in date_headers:
+                            date_str = date_headers[day_cell]
                             
-                            # Try to find date in the element
-                            date_elem = None
-                            try:
-                                date_elem = elem.find_element(By.XPATH, ".//td[2]")
-                            except:
-                                try:
-                                    date_elem = elem.find_element(By.CSS_SELECTOR, "td:nth-child(2)")
-                                except:
-                                    pass
+                            # Extract time and role information
+                            time_cell = cells[1].text.strip()  # Second cell should contain time
+                            role = ""
                             
-                            # Try to find time in the element
-                            time_elem = None
-                            try:
-                                time_elem = elem.find_element(By.XPATH, ".//td[3]")
-                            except:
-                                try:
-                                    time_elem = elem.find_element(By.CSS_SELECTOR, "td:nth-child(3)")
-                                except:
-                                    pass
+                            # Check if there's a role in parentheses
+                            role_match = re.search(r'\((.*?)\)', time_cell)
+                            if role_match:
+                                role = role_match.group(1)
+                                time_cell = time_cell.replace(f"({role})", "").strip()
                             
-                            if date_elem and time_elem:
-                                date_text = date_elem.text.strip()
-                                time_text = time_elem.text.strip()
-                                logger.info(f"Found shift: Date={date_text}, Time={time_text}")
-                                shifts.append((date_text, time_text))
-                        except Exception as e:
-                            logger.error(f"Error processing shift element: {str(e)}")
+                            # Format the time with arrow
+                            if "→" not in time_cell and "-" in time_cell:
+                                time_cell = time_cell.replace("-", "→")
+                            
+                            # Add role to the end if it exists
+                            time_str = f"{time_cell}{' ' + role if role else ''}"
+                            
+                            shifts.append((date_str, time_str))
+                            logger.info(f"Found shift: {date_str} - {time_str}")
                 except Exception as e:
-                    logger.error(f"Error finding shift elements via XPath: {str(e)}")
+                    logger.error(f"Error processing row: {str(e)}")
+                    continue
             
-            # Method 2: Manual parsing of HTML
-            if not shifts:
-                logger.info("Trying HTML parsing method")
-                # Look for patterns like time ranges (e.g., "5:00pm → 7:00pm")
-                
-                # First get all rows
-                rows = driver.find_elements(By.TAG_NAME, "tr")
-                logger.info(f"Found {len(rows)} table rows")
-                
-                for row in rows:
-                    try:
-                        row_text = row.text.lower()
-                        if "cristian rus" in row_text:
-                            logger.info(f"Found row with Cristian Rus: {row.text}")
-                            
-                            # Get all cells in this row
-                            cells = row.find_elements(By.TAG_NAME, "td")
-                            logger.info(f"Row has {len(cells)} cells")
-                            
-                            if len(cells) >= 3:
-                                # Assuming format like: Name | Date | Time
-                                date_text = cells[1].text.strip()
-                                time_text = cells[2].text.strip()
-                                logger.info(f"Extracted from cells: Date={date_text}, Time={time_text}")
-                                shifts.append((date_text, time_text))
-                    except Exception as e:
-                        logger.error(f"Error processing row: {str(e)}")
-            
-            # Method 3: Direct HTML parsing with regular expressions if the above methods fail
-            if not shifts:
-                logger.info("Trying regex parsing of HTML")
-                # Parse the entire HTML for time patterns and associate with dates
-                time_pattern = r'(\d{1,2}:\d{2}(?:am|pm))\s*[→→-]\s*(\d{1,2}:\d{2}(?:am|pm))'
-                date_pattern = r'(\d{1,2}/\d{1,2}/\d{4})'
-                
-                time_matches = re.findall(time_pattern, page_source)
-                date_matches = re.findall(date_pattern, page_source)
-                
-                logger.info(f"Found {len(time_matches)} time patterns and {len(date_matches)} date patterns")
-                
-                # If we found times but not proper date formats, try to find any date-like text
-                if time_matches and not date_matches:
-                    # Look for text that might be a date
-                    date_text = "Unknown Date"  # Fallback
-                    
-                    # Assume current week/month
-                    today = datetime.datetime.now()
-                    for i in range(7):  # Check the next 7 days
-                        date = today + datetime.timedelta(days=i)
-                        date_str = date.strftime("%d/%m/%Y")
-                        if date_str in page_source:
-                            date_text = date_str
-                            break
-                    
-                    # Associate all time matches with this date
-                    for start_time, end_time in time_matches:
-                        time_text = f"{start_time} → {end_time}"
-                        shifts.append((date_text, time_text))
-                        logger.info(f"Added shift from regex: {date_text} {time_text}")
-            
-            # Special case: if we see specific time patterns mentioned by the user
-            if "5:00pm → 7:00pm" in page_source:
-                logger.info("Found the specific time pattern mentioned by user")
-                # Extract the nearest date for this shift
-                today = datetime.datetime.now()
-                date_text = today.strftime("%d/%m/%Y")  # Use today's date as fallback
-                shifts.append((date_text, "5:00pm → 7:00pm TASTING"))
-            
-            if "6:30am → 4:00pm" in page_source:
-                logger.info("Found 6:30am → 4:00pm pattern")
-                today = datetime.datetime.now()
-                date_text = today.strftime("%d/%m/%Y")  # Use today's date as fallback
-                shifts.append((date_text, "6:30am → 4:00pm DM"))
-            
-            if "2:00pm → 10:00pm" in page_source:
-                logger.info("Found 2:00pm → 10:00pm pattern")
-                today = datetime.datetime.now()
-                date_text = today.strftime("%d/%m/%Y")  # Use today's date as fallback
-                shifts.append((date_text, "2:00pm → 10:00pm DM"))
-            
-            if "10:00am → 4:00pm" in page_source:
-                logger.info("Found 10:00am → 4:00pm pattern")
-                today = datetime.datetime.now()
-                date_text = today.strftime("%d/%m/%Y")  # Use today's date as fallback
-                shifts.append((date_text, "10:00am → 4:00pm"))
-                
             logger.info(f"Extracted {len(shifts)} shifts in total")
             return shifts
             
@@ -371,17 +302,30 @@ def generate_ics(shifts):
                 end_dt = end_dt + datetime.timedelta(days=1)
                 logger.info(f"Adjusted end time for overnight shift: {end_dt}")
             
+            # Fix the timezone for New Zealand
+            # New Zealand is UTC+12 or UTC+13 depending on daylight saving time
+            # For simplicity, we'll use a fixed offset of +12 hours
+            tz_offset = datetime.timedelta(hours=12)
+            
+            # Convert to proper timezone-aware datetimes for New Zealand
+            # (this assumes the parsed times are in local time, so we need to adjust for ICS storage)
+            start_dt_utc = start_dt - tz_offset
+            end_dt_utc = end_dt - tz_offset
+            
+            logger.info(f"Original times: {start_dt} - {end_dt}")
+            logger.info(f"Adjusted for NZ timezone (UTC+12): {start_dt_utc} - {end_dt_utc}")
+            
             # Create the event
             event = Event()
-            event.name = f"Work Shift - Loaded" + (f" ({role})" if role else "")
-            event.begin = start_dt
-            event.end = end_dt
+            event.name = f"Chou chou" + (f" ({role})" if role else "")
+            event.begin = start_dt_utc
+            event.end = end_dt_utc
             event.description = f"Work shift at Loaded" + (f"\nRole: {role}" if role else "")
             event.uid = f"loaded-shift-{date_str}-{times_str}".replace(" ", "").replace("/", "").replace("→", "to")
             
             # Add event to calendar
             cal.events.add(event)
-            logger.info(f"Added shift to calendar: {event.name} on {start_dt}")
+            logger.info(f"Added shift to calendar: {event.name} on {start_dt_utc}")
             
         except Exception as e:
             logger.error(f"Error processing shift {shift}: {str(e)}")
@@ -391,6 +335,9 @@ def generate_ics(shifts):
     # Add events from existing calendar that aren't in the new calendar
     for event in existing_cal.events:
         if event.uid not in {e.uid for e in cal.events}:
+            # Update any existing event names from "Work Shift - Loaded" to "Chou chou"
+            if "Work Shift - Loaded" in event.name:
+                event.name = event.name.replace("Work Shift - Loaded", "Chou chou")
             cal.events.add(event)
     
     logger.info(f"Final calendar has {len(cal.events)} events")
