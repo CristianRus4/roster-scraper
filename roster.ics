@@ -17,6 +17,13 @@ UID:loaded-roster-check-20250311104235
 END:VEVENT
 BEGIN:VEVENT
 DESCRIPTION:Script ran but no shifts were found for Cristian Rus
+DTEND:20250311T104845Z
+DTSTART:20250311T104745Z
+SUMMARY:Roster check - No shifts found
+UID:loaded-roster-check-20250311104745
+END:VEVENT
+BEGIN:VEVENT
+DESCRIPTION:Script ran but no shifts were found for Cristian Rus
 DTEND:20250311T103248Z
 DTSTART:20250311T103148Z
 SUMMARY:Roster check - No shifts found
