@@ -39,15 +39,18 @@ def generate_ics(shifts):
     
     for shift in shifts:
         date_str, times_str = shift
-        start_time, end_time = times_str.split(" - ")
-        start_dt = datetime.datetime.strptime(f"{date_str} {start_time}", "%d/%m/%Y %I:%M %p")
-        end_dt = datetime.datetime.strptime(f"{date_str} {end_time}", "%d/%m/%Y %I:%M %p")
-        
-        event = Event()
-        event.name = "Work Shift"
-        event.begin = start_dt.isoformat()
-        event.end = end_dt.isoformat()
-        cal.events.add(event)
+        if " - " in times_str:
+            start_time, end_time = times_str.split(" - ")
+            start_dt = datetime.datetime.strptime(f"{date_str} {start_time}", "%d/%m/%Y %I:%M %p")
+            end_dt = datetime.datetime.strptime(f"{date_str} {end_time}", "%d/%m/%Y %I:%M %p")
+            
+            event = Event()
+            event.name = "Work Shift"
+            event.begin = start_dt.isoformat()
+            event.end = end_dt.isoformat()
+            cal.events.add(event)
+        else:
+            print(f"Skipping invalid time format: {times_str}")
     
     with open("roster.ics", "w") as f:
         f.writelines(cal)
