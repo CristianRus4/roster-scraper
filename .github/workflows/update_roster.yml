@@ -92,5 +92,6 @@ jobs:
             debug_screenshot.png
             timeout_error.png
             page_source.html
+            page_screenshot.png
             roster.ics
           if-no-files-found: ignore
