@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install selenium webdriver-manager ics
+          pip install -r requirements.txt
           
       - name: Run scraper
         run: python scraper.py
