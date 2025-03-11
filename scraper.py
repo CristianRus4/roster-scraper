@@ -97,24 +97,33 @@ def get_shifts():
                 
                 for header in headers:
                     header_text = header.text.strip()
+                    logger.info(f"Processing header: {header_text}")
+                    
                     if any(day in header_text for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']):
-                        # Extract the date from format like "Monday 10th Mar"
-                        day_match = re.search(r'(\d+)(?:st|nd|rd|th)\s+([A-Za-z]+)', header_text)
-                        if day_match:
-                            day = int(day_match.group(1))
-                            month = day_match.group(2)
-                            # Convert month name to number
-                            month_num = {
-                                'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
-                                'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12
-                            }[month[:3]]
-                            date_str = f"{day:02d}/{month_num:02d}/{current_year}"
-                            date_headers[header_text.split()[0]] = date_str
-                            logger.info(f"Found date header: {header_text} -> {date_str}")
+                        # Extract the date from format like "Monday\n10th Mar"
+                        # Split by newline to handle multi-line headers
+                        header_parts = header_text.split('\n')
+                        day_name = header_parts[0].strip()
+                        if len(header_parts) > 1:
+                            date_part = header_parts[1].strip()
+                            # Extract the date from format like "10th Mar"
+                            day_match = re.search(r'(\d+)(?:st|nd|rd|th)\s+([A-Za-z]+)', date_part)
+                            if day_match:
+                                day = int(day_match.group(1))
+                                month = day_match.group(2)
+                                # Convert month name to number
+                                month_num = {
+                                    'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
+                                    'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12
+                                }[month[:3]]
+                                date_str = f"{day:02d}/{month_num:02d}/{current_year}"
+                                date_headers[day_name] = date_str
+                                logger.info(f"Found date header: {day_name} -> {date_str}")
                 
                 logger.info(f"Extracted date headers: {date_headers}")
             except Exception as e:
                 logger.error(f"Error extracting date headers: {str(e)}")
+                logger.error(traceback.format_exc())
                 date_headers = {}
             
             shifts = []
@@ -126,14 +135,22 @@ def get_shifts():
                     if "Cristian Rus" in row.text:
                         # Get all cells in the row
                         cells = row.find_elements(By.TAG_NAME, "td")
+                        logger.info(f"Found Cristian's row with {len(cells)} cells: {row.text}")
                         
                         # Find which day this shift is for
                         day_cell = cells[0].text.strip()  # First cell should contain the day
-                        if day_cell in date_headers:
-                            date_str = date_headers[day_cell]
+                        logger.info(f"Day cell content: {day_cell}")
+                        
+                        # Extract just the day name if it contains a date
+                        day_name = day_cell.split('\n')[0] if '\n' in day_cell else day_cell
+                        
+                        if day_name in date_headers:
+                            date_str = date_headers[day_name]
+                            logger.info(f"Matched day {day_name} to date {date_str}")
                             
                             # Extract time and role information
                             time_cell = cells[1].text.strip()  # Second cell should contain time
+                            logger.info(f"Time cell content: {time_cell}")
                             role = ""
                             
                             # Check if there's a role in parentheses
@@ -151,8 +168,11 @@ def get_shifts():
                             
                             shifts.append((date_str, time_str))
                             logger.info(f"Found shift: {date_str} - {time_str}")
+                        else:
+                            logger.warning(f"Could not find date for day: {day_name}")
                 except Exception as e:
                     logger.error(f"Error processing row: {str(e)}")
+                    logger.error(traceback.format_exc())
                     continue
             
             logger.info(f"Extracted {len(shifts)} shifts in total")
