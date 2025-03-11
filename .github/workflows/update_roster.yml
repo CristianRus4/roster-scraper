@@ -6,13 +6,16 @@ on:
   workflow_dispatch:  # allows manual triggering
 
 jobs:
-  update:
+  update-roster:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v2
+     
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -21,14 +24,16 @@ jobs:
       - name: Install dependencies
         run: |
           pip install selenium webdriver-manager ics
-
+          
       - name: Run scraper
         run: python scraper.py
-
+       
       - name: Commit and push changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
           git add roster.ics
-          git commit -m "Updated roster" || echo "No changes to commit"
+          git commit -m "Updated roster"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
