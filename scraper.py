@@ -33,7 +33,7 @@ def setup_driver():
 
 def extract_shifts():
     driver = setup_driver()
-    url = "https://loadedhub.com/App/PublicRoster#/roster/03138d50-b542-4ca2-952f-8756ef67c2ba/e023f92d-acb6-91a7-fbc0-2555e704bf53https://loadedhub.com/App/PublicRoster#/roster/03138d50-b542-4ca2-952f-8756ef67c2ba/e023f92d-acb6-91a7-fbc0-2555e704bf53?report=%7B%22time%22:%222025-04-13T11:37:32%2B12:00%22,%22type%22:%22week%22%7D"
+    url = "https://loadedhub.com/App/PublicRoster#/roster/03138d50-b542-4ca2-952f-8756ef67c2ba/e023f92d-acb6-91a7-fbc0-2555e704bf53"
     
     try:
         driver.get(url)
