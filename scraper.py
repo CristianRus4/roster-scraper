@@ -135,7 +135,7 @@ def create_ics(shifts):
             end_dt_utc = end_dt_local.astimezone(pytz.UTC)
             
             event = Event()
-            event.name = f"Chou chou" + (f" ({role})" if role else "")
+            event.name = f"Chouchou" + (f" ({role})" if role else "")
             event.begin = start_dt_utc
             event.end = end_dt_utc
             event.description = f"Work shift at Loaded" + (f"\nRole: {role}" if role else "")
@@ -152,7 +152,7 @@ def create_text_summary(shifts):
     with open("roster_summary.txt", "w") as f:
         for shift in shifts:
             f.write(f"Date: {shift['day_name']}, {shift['date']}\n")
-            f.write(f"Event name: Chou chou" + (f" ({shift['role']})" if shift['role'] else "") + "\n")
+            f.write(f"Event name: Chouchou" + (f" ({shift['role']})" if shift['role'] else "") + "\n")
             f.write(f"Time: {shift['shift']}\n")
             f.write("-" * 40 + "\n")
 
