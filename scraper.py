@@ -156,6 +156,7 @@ def create_ics(shifts):
             event.end = end_dt_utc
             event.description = f"Work shift at Loaded" + (f"\nRole: {role}" if role else "")
             
+            event.location = "Chouchou\n1 Taranaki Street, Te Aro, Wellington, 6011"
             cal.events.add(event)
             
         except ValueError as e:
