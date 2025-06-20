@@ -16,7 +16,7 @@ import platform
 import re
 import pytz
 
-# Set up logging
+# Set up logging function
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
