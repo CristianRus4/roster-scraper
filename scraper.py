@@ -283,6 +283,8 @@ def render_event(shift: ShiftEvent, generated_at: dt.datetime, company_name: str
     if shift.jobs:
         description_parts.append(f"Jobs: {', '.join(shift.jobs)}")
     description_parts.append(f"Shift ID: {shift.shift_id}")
+    description = escape_ical_text(chr(10).join(description_parts))
+    location = escape_ical_text(LOCATION.replace("\n", chr(10)))
 
     lines = [
         "BEGIN:VEVENT",
@@ -291,8 +293,8 @@ def render_event(shift: ShiftEvent, generated_at: dt.datetime, company_name: str
         f"DTSTART:{format_utc_timestamp(shift.start)}",
         f"DTEND:{format_utc_timestamp(shift.end)}",
         f"SUMMARY:{escape_ical_text(summary)}",
-        f"DESCRIPTION:{escape_ical_text(chr(10).join(description_parts))}",
-        f"LOCATION:{escape_ical_text(LOCATION.replace('\\n', chr(10)))}",
+        f"DESCRIPTION:{description}",
+        f"LOCATION:{location}",
         "STATUS:CONFIRMED",
         "TRANSP:OPAQUE",
         "END:VEVENT",

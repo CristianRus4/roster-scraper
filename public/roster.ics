@@ -13,7 +13,7 @@ DTEND:20260318T070000Z
 SUMMARY:Chou Chou (FOH)
 DESCRIPTION:Staff: Cristian Rus\nRole: FOH\nShift ID: 7018dc15-23c2-402b-a8
  ba-08de7d5d5f5e
-LOCATION:Chou Chou\n1 Taranaki Street\, Te Aro\, Wellington\, 6011
+LOCATION:Chou Chou\\n1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
@@ -25,7 +25,7 @@ DTEND:20260320T070000Z
 SUMMARY:Chou Chou (FOH)
 DESCRIPTION:Staff: Cristian Rus\nRole: FOH\nShift ID: 13a6dd50-7b74-45d1-9f
  1f-08de7a1b01e0
-LOCATION:Chou Chou\n1 Taranaki Street\, Te Aro\, Wellington\, 6011
+LOCATION:Chou Chou\\n1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
@@ -37,7 +37,7 @@ DTEND:20260322T070000Z
 SUMMARY:Chou Chou (FOH)
 DESCRIPTION:Staff: Cristian Rus\nRole: FOH\nShift ID: 411b43be-38c1-43d8-0a
  c6-08de7d40410a
-LOCATION:Chou Chou\n1 Taranaki Street\, Te Aro\, Wellington\, 6011
+LOCATION:Chou Chou\\n1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
