@@ -1,0 +1,61 @@
+{
+  "rosteredShifts": [
+    {
+      "id": "shift-002",
+      "staffMemberId": "staff-cristian",
+      "roleId": "role-foh",
+      "roleName": "FOH",
+      "jobs": "[\"Floor\", \"Close\"]",
+      "clockinTime": "2026-03-18T17:00:00+13:00",
+      "clockoutTime": "2026-03-18T20:00:00+13:00",
+      "breaks": []
+    },
+    {
+      "id": "shift-001",
+      "staffMemberId": "staff-cristian",
+      "roleId": "role-foh",
+      "roleName": "FOH",
+      "jobs": null,
+      "clockinTime": "2026-03-16T22:00:00+13:00",
+      "clockoutTime": "2026-03-17T02:00:00+13:00",
+      "breaks": []
+    },
+    {
+      "id": "shift-other",
+      "staffMemberId": "staff-other",
+      "roleId": "role-mgr",
+      "roleName": "Manager",
+      "jobs": null,
+      "clockinTime": "2026-03-18T09:00:00+13:00",
+      "clockoutTime": "2026-03-18T17:00:00+13:00",
+      "breaks": []
+    }
+  ],
+  "staff": [
+    {
+      "id": "staff-cristian",
+      "name": "Cristian Rus",
+      "showInRoster": true,
+      "datestampDeleted": null
+    },
+    {
+      "id": "staff-other",
+      "name": "Someone Else",
+      "showInRoster": true,
+      "datestampDeleted": null
+    }
+  ],
+  "roles": [
+    {
+      "id": "role-foh",
+      "name": "FOH",
+      "datestampDeleted": null
+    },
+    {
+      "id": "role-mgr",
+      "name": "Manager",
+      "datestampDeleted": null
+    }
+  ],
+  "leaveRequests": []
+}
