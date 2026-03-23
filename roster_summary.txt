@@ -2,3 +2,15 @@ Date: Tuesday, 24/03/2026
 Event name: Chou Chou (FOH)
 Time: 05:00PM -> 09:30PM
 ----------------------------------------
+Date: Tuesday, 31/03/2026
+Event name: Chou Chou (FOH)
+Time: 05:30PM -> 09:00PM
+----------------------------------------
+Date: Thursday, 02/04/2026
+Event name: Chou Chou (FOH)
+Time: 05:00PM -> 08:00PM
+----------------------------------------
+Date: Sunday, 05/04/2026
+Event name: Chou Chou (FOH)
+Time: 05:00PM -> 08:30PM
+----------------------------------------
