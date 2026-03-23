@@ -68,18 +68,41 @@ class PayloadTests(unittest.TestCase):
     def test_overlapping_coworkers_only_foh_admin_manager_and_time_overlap(self):
         evening = next(shift for shift in scraper.extract_employee_shifts(self.payload, "Cristian Rus") if shift.shift_id == "shift-002")
         coworkers = scraper.overlapping_coworkers(self.payload, scraper.get_employee_id(self.payload, "Cristian Rus"), evening)
-        self.assertEqual(coworkers, [("Alex Worker", "FOH", "shift-mate")])
+        self.assertEqual(coworkers, [("Alex Worker", "FOH")])
 
     def test_format_shift_breaks_from_api_payload(self):
         ref = dt.datetime(2026, 3, 18, 17, 0, tzinfo=dt.timezone(dt.timedelta(hours=13)))
         lines = scraper.format_shift_breaks(
-            [{"startTime": "2026-03-18T18:00:00+13:00", "endTime": "2026-03-18T18:30:00+13:00"}],
+            {"breaks": [{"startTime": "2026-03-18T18:00:00+13:00", "endTime": "2026-03-18T18:30:00+13:00"}]},
             ref,
         )
         self.assertEqual(len(lines), 1)
         self.assertIn("Break 1:", lines[0])
         self.assertIn("6:00PM", lines[0])
         self.assertIn("6:30PM", lines[0])
+
+    def test_format_shift_breaks_accepts_json_string_and_meal_breaks_key(self):
+        ref = dt.datetime(2026, 3, 18, 17, 0, tzinfo=dt.timezone(dt.timedelta(hours=13)))
+        json_str = json.dumps(
+            [{"startTime": "2026-03-18T18:00:00+13:00", "endTime": "2026-03-18T18:30:00+13:00"}]
+        )
+        lines = scraper.format_shift_breaks({"breaks": json_str}, ref)
+        self.assertEqual(len(lines), 1)
+
+        lines_alt = scraper.format_shift_breaks(
+            {
+                "mealBreaks": [
+                    {"startDateTime": "2026-03-18T18:00:00+13:00", "endDateTime": "2026-03-18T18:30:00+13:00"}
+                ]
+            },
+            ref,
+        )
+        self.assertEqual(len(lines_alt), 1)
+
+    def test_format_shift_breaks_falls_back_to_total_minutes_on_shift(self):
+        ref = dt.datetime(2026, 3, 18, 17, 0, tzinfo=dt.timezone(dt.timedelta(hours=13)))
+        lines = scraper.format_shift_breaks({"breaks": [], "totalBreakMinutes": 30}, ref)
+        self.assertEqual(lines, ("Break (scheduled): 30 minutes total",))
 
 
 class SummaryRenderingTests(unittest.TestCase):
@@ -130,7 +153,7 @@ class CalendarRenderingTests(unittest.TestCase):
         )
         unfolded = calendar_text.replace("\r\n ", "")
         self.assertIn("Working with:", unfolded)
-        self.assertIn("- Alex Worker — FOH — shift-mate", unfolded)
+        self.assertIn("- Alex Worker — FOH", unfolded)
         self.assertNotIn("Pat Cook", calendar_text)
         self.assertNotIn("Someone Else", calendar_text)
 

@@ -220,26 +220,113 @@ def _parse_iso_datetime(value: Any) -> dt.datetime | None:
         return None
 
 
-def format_shift_breaks(raw: Any, reference: dt.datetime) -> tuple[str, ...]:
-    """Turn API `breaks` entries into display lines (start/end times or duration)."""
-    if not isinstance(raw, list) or not raw:
-        return ()
+def _parse_datetime_flexible(value: Any, tz: dt.tzinfo) -> dt.datetime | None:
+    if value is None or value == "":
+        return None
+    if isinstance(value, (int, float)):
+        v = float(value)
+        if v > 1e12:
+            v = v / 1000.0
+        try:
+            return dt.datetime.fromtimestamp(v, tz=dt.timezone.utc).astimezone(tz)
+        except (ValueError, OSError):
+            return None
+    if isinstance(value, str):
+        s = value.strip()
+        if not s:
+            return None
+        m = re.match(r"^/Date\((\d+)\)/$", s)
+        if m:
+            try:
+                return dt.datetime.fromtimestamp(int(m.group(1)) / 1000.0, tz=dt.timezone.utc).astimezone(tz)
+            except (ValueError, OSError):
+                return None
+        return _parse_iso_datetime(s)
+    return None
+
+
+def _break_start_keys() -> tuple[str, ...]:
+    return (
+        "startTime",
+        "clockinTime",
+        "start",
+        "startDateTime",
+        "from",
+        "breakStart",
+        "beginTime",
+        "mealStart",
+        "mealStartTime",
+    )
+
+
+def _break_end_keys() -> tuple[str, ...]:
+    return (
+        "endTime",
+        "clockoutTime",
+        "end",
+        "endDateTime",
+        "to",
+        "breakEnd",
+        "finishTime",
+        "mealEnd",
+        "mealEndTime",
+    )
+
+
+def _break_duration_minutes(br: dict[str, Any]) -> int | None:
+    for key in ("durationMinutes", "duration", "lengthMinutes", "minutes", "breakMinutes", "durationMins"):
+        if key in br and br[key] is not None:
+            try:
+                return int(br[key])
+            except (TypeError, ValueError):
+                continue
+    return None
+
+
+def _parse_breaks_json(raw: Any) -> Any:
+    if raw is None:
+        return None
+    if isinstance(raw, str) and raw.strip():
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            return None
+    return raw
+
+
+def _gather_break_entries(shift_item: dict[str, Any]) -> list[Any]:
+    """Collect break rows from whichever field Loaded sends (names vary by API version)."""
+    out: list[Any] = []
+    for key in ("breaks", "mealBreaks", "scheduledBreaks", "shiftBreaks", "rosterBreaks", "breakTimes"):
+        raw = _parse_breaks_json(shift_item.get(key))
+        if raw is None:
+            continue
+        if isinstance(raw, list):
+            out.extend(raw)
+        elif isinstance(raw, dict):
+            out.append(raw)
+    return out
+
+
+def format_shift_breaks(shift_item: dict[str, Any], reference: dt.datetime) -> tuple[str, ...]:
+    """Turn API break entries into display lines (start/end times or duration)."""
+    entries = _gather_break_entries(shift_item)
 
     tz = reference.tzinfo or dt.timezone.utc
     lines: list[str] = []
-    for i, br in enumerate(raw, start=1):
+    for i, br in enumerate(entries, start=1):
         if not isinstance(br, dict):
             continue
         start: dt.datetime | None = None
         end: dt.datetime | None = None
-        for key in ("startTime", "clockinTime", "start"):
+        for key in _break_start_keys():
             if key in br:
-                start = _parse_iso_datetime(br.get(key))
+                start = _parse_datetime_flexible(br.get(key), tz)
                 if start is not None:
                     break
-        for key in ("endTime", "clockoutTime", "end"):
+        for key in _break_end_keys():
             if key in br:
-                end = _parse_iso_datetime(br.get(key))
+                end = _parse_datetime_flexible(br.get(key), tz)
                 if end is not None:
                     break
         if start is not None and end is not None:
@@ -254,15 +341,27 @@ def format_shift_breaks(raw: Any, reference: dt.datetime) -> tuple[str, ...]:
             else:
                 lines.append(f"Break {i}: {ls:%I:%M%p %d/%m} – {le:%I:%M%p %d/%m}")
         else:
-            duration = br.get("durationMinutes")
+            duration = _break_duration_minutes(br)
             if duration is not None:
                 lines.append(f"Break {i}: {duration} minutes")
+
+    if not lines:
+        for key in ("totalBreakMinutes", "scheduledBreakMinutes", "breakMinutesTotal", "totalUnpaidBreakMinutes"):
+            if key not in shift_item or shift_item[key] is None:
+                continue
+            try:
+                minutes = int(shift_item[key])
+            except (TypeError, ValueError):
+                continue
+            if minutes > 0:
+                lines.append(f"Break (scheduled): {minutes} minutes total")
+                break
 
     return tuple(lines)
 
 
-def overlapping_coworkers(payload: dict[str, Any], employee_id: str, shift: ShiftEvent) -> list[tuple[str, str, str]]:
-    """Other staff on rostered shifts that overlap this shift; (name, role, their shift id)."""
+def overlapping_coworkers(payload: dict[str, Any], employee_id: str, shift: ShiftEvent) -> list[tuple[str, str]]:
+    """Other staff on rostered shifts that overlap this shift; (name, role)."""
     staff = payload.get("staff")
     rostered_shifts = payload.get("rosteredShifts")
     if not isinstance(staff, list) or not isinstance(rostered_shifts, list):
@@ -275,13 +374,10 @@ def overlapping_coworkers(payload: dict[str, Any], employee_id: str, shift: Shif
             id_to_name[str(mid)] = (member.get("name") or "").strip()
 
     seen_ids: set[str] = set()
-    out: list[tuple[str, str, str]] = []
+    out: list[tuple[str, str]] = []
     for item in rostered_shifts:
         sid = item.get("staffMemberId")
         if not sid or sid == employee_id:
-            continue
-        coworker_shift_id = item.get("id")
-        if not coworker_shift_id:
             continue
         start_raw = item.get("clockinTime")
         end_raw = item.get("clockoutTime")
@@ -301,9 +397,9 @@ def overlapping_coworkers(payload: dict[str, Any], employee_id: str, shift: Shif
         if key in seen_ids:
             continue
         seen_ids.add(key)
-        out.append((name, role_name, str(coworker_shift_id)))
+        out.append((name, role_name))
 
-    out.sort(key=lambda pair: (pair[0].lower(), pair[1].lower(), pair[2].lower()))
+    out.sort(key=lambda pair: (pair[0].lower(), pair[1].lower()))
     return out
 
 
@@ -342,7 +438,7 @@ def extract_employee_shifts(payload: dict[str, Any], employee_name: str) -> list
             raise ScraperError(f"Malformed shift payload for employee {employee_name!r}: {item!r}")
         start = dt.datetime.fromisoformat(start_raw)
         end = dt.datetime.fromisoformat(end_raw)
-        breaks_display = format_shift_breaks(item.get("breaks"), start)
+        breaks_display = format_shift_breaks(item, start)
         shifts.append(
             ShiftEvent(
                 shift_id=shift_id,
@@ -413,8 +509,8 @@ def render_event(
     coworkers = overlapping_coworkers(payload, employee_id, shift)
     if coworkers:
         description_parts.append("Working with:")
-        for name, role, coworker_shift_id in coworkers:
-            description_parts.append(f"- {name} — {role} — {coworker_shift_id}")
+        for name, role in coworkers:
+            description_parts.append(f"- {name} — {role}")
         description_parts.append("")
 
     description_parts.append(f"Staff: {shift.staff_name}")
