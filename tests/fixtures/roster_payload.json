@@ -8,7 +8,12 @@
       "jobs": "[\"Floor\", \"Close\"]",
       "clockinTime": "2026-03-18T17:00:00+13:00",
       "clockoutTime": "2026-03-18T20:00:00+13:00",
-      "breaks": []
+      "breaks": [
+        {
+          "startTime": "2026-03-18T18:00:00+13:00",
+          "endTime": "2026-03-18T18:30:00+13:00"
+        }
+      ]
     },
     {
       "id": "shift-001",
@@ -29,6 +34,26 @@
       "clockinTime": "2026-03-18T09:00:00+13:00",
       "clockoutTime": "2026-03-18T17:00:00+13:00",
       "breaks": []
+    },
+    {
+      "id": "shift-mate",
+      "staffMemberId": "staff-mate",
+      "roleId": "role-foh",
+      "roleName": "FOH",
+      "jobs": null,
+      "clockinTime": "2026-03-18T17:00:00+13:00",
+      "clockoutTime": "2026-03-18T20:00:00+13:00",
+      "breaks": []
+    },
+    {
+      "id": "shift-kitchen-overlap",
+      "staffMemberId": "staff-kitchen",
+      "roleId": "role-kitchen",
+      "roleName": "Kitchen",
+      "jobs": null,
+      "clockinTime": "2026-03-18T17:00:00+13:00",
+      "clockoutTime": "2026-03-18T20:00:00+13:00",
+      "breaks": []
     }
   ],
   "staff": [
@@ -43,6 +68,18 @@
       "name": "Someone Else",
       "showInRoster": true,
       "datestampDeleted": null
+    },
+    {
+      "id": "staff-mate",
+      "name": "Alex Worker",
+      "showInRoster": true,
+      "datestampDeleted": null
+    },
+    {
+      "id": "staff-kitchen",
+      "name": "Pat Cook",
+      "showInRoster": true,
+      "datestampDeleted": null
     }
   ],
   "roles": [
@@ -54,6 +91,11 @@
     {
       "id": "role-mgr",
       "name": "Manager",
+      "datestampDeleted": null
+    },
+    {
+      "id": "role-kitchen",
+      "name": "Kitchen",
       "datestampDeleted": null
     }
   ],

@@ -65,26 +65,85 @@ class PayloadTests(unittest.TestCase):
         with self.assertRaises(scraper.ScraperError):
             scraper.extract_employee_shifts({"staff": "bad", "rosteredShifts": []}, "Cristian Rus")
 
+    def test_overlapping_coworkers_only_foh_admin_manager_and_time_overlap(self):
+        evening = next(shift for shift in scraper.extract_employee_shifts(self.payload, "Cristian Rus") if shift.shift_id == "shift-002")
+        coworkers = scraper.overlapping_coworkers(self.payload, scraper.get_employee_id(self.payload, "Cristian Rus"), evening)
+        self.assertEqual(coworkers, [("Alex Worker", "FOH", "shift-mate")])
+
+    def test_format_shift_breaks_from_api_payload(self):
+        ref = dt.datetime(2026, 3, 18, 17, 0, tzinfo=dt.timezone(dt.timedelta(hours=13)))
+        lines = scraper.format_shift_breaks(
+            [{"startTime": "2026-03-18T18:00:00+13:00", "endTime": "2026-03-18T18:30:00+13:00"}],
+            ref,
+        )
+        self.assertEqual(len(lines), 1)
+        self.assertIn("Break 1:", lines[0])
+        self.assertIn("6:00PM", lines[0])
+        self.assertIn("6:30PM", lines[0])
+
+
+class SummaryRenderingTests(unittest.TestCase):
+    def test_uses_company_display_name_in_event_title(self):
+        payload = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
+        shifts = scraper.extract_employee_shifts(payload, "Cristian Rus")
+        summary = scraper.render_summary(shifts, "Chou Chou")
+        self.assertIn("Event name: ChouChou (FOH)", summary)
+
 
 class CalendarRenderingTests(unittest.TestCase):
     def setUp(self):
-        payload = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
-        self.shifts = scraper.extract_employee_shifts(payload, "Cristian Rus")
+        self.payload = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
+        self.shifts = scraper.extract_employee_shifts(self.payload, "Cristian Rus")
+        self.employee_id = scraper.get_employee_id(self.payload, "Cristian Rus")
         self.generated_at = dt.datetime(2026, 3, 9, 0, 0, tzinfo=dt.timezone.utc)
 
     def test_renders_stable_calendar(self):
-        calendar_text = scraper.render_calendar(self.shifts, "Chou Chou", generated_at=self.generated_at)
+        calendar_text = scraper.render_calendar(
+            self.shifts, "Chou Chou", self.payload, self.employee_id, generated_at=self.generated_at
+        )
         self.assertIn("BEGIN:VCALENDAR\r\n", calendar_text)
         self.assertIn("UID:", calendar_text)
-        self.assertEqual(calendar_text, scraper.render_calendar(self.shifts, "Chou Chou", generated_at=self.generated_at))
+        self.assertEqual(
+            calendar_text,
+            scraper.render_calendar(
+                self.shifts, "Chou Chou", self.payload, self.employee_id, generated_at=self.generated_at
+            ),
+        )
 
     def test_renders_overnight_shift_end_correctly(self):
-        calendar_text = scraper.render_calendar(self.shifts, "Chou Chou", generated_at=self.generated_at)
+        calendar_text = scraper.render_calendar(
+            self.shifts, "Chou Chou", self.payload, self.employee_id, generated_at=self.generated_at
+        )
         self.assertIn("DTSTART:20260316T090000Z", calendar_text)
         self.assertIn("DTEND:20260316T130000Z", calendar_text)
 
+    def test_event_title_and_location_use_display_name_and_address(self):
+        calendar_text = scraper.render_calendar(
+            self.shifts, "Chou Chou", self.payload, self.employee_id, generated_at=self.generated_at
+        )
+        self.assertIn("SUMMARY:ChouChou (FOH)", calendar_text)
+        self.assertIn("LOCATION:1 Taranaki Street\\, Te Aro\\, Wellington\\, 6011", calendar_text)
+
+    def test_working_with_lists_overlapping_allowed_roles_only(self):
+        calendar_text = scraper.render_calendar(
+            self.shifts, "Chou Chou", self.payload, self.employee_id, generated_at=self.generated_at
+        )
+        unfolded = calendar_text.replace("\r\n ", "")
+        self.assertIn("Working with:", unfolded)
+        self.assertIn("- Alex Worker — FOH — shift-mate", unfolded)
+        self.assertNotIn("Pat Cook", calendar_text)
+        self.assertNotIn("Someone Else", calendar_text)
+
+    def test_breaks_appear_before_working_with(self):
+        calendar_text = scraper.render_calendar(
+            self.shifts, "Chou Chou", self.payload, self.employee_id, generated_at=self.generated_at
+        )
+        unfolded = calendar_text.replace("\r\n ", "")
+        self.assertIn("Break 1:", unfolded)
+        self.assertLess(unfolded.index("Break 1:"), unfolded.index("Working with:"))
+
     def test_renders_empty_calendar(self):
-        calendar_text = scraper.render_calendar([], "Chou Chou", generated_at=self.generated_at)
+        calendar_text = scraper.render_calendar([], "Chou Chou", {}, "", generated_at=self.generated_at)
         self.assertIn("BEGIN:VCALENDAR", calendar_text)
         self.assertNotIn("BEGIN:VEVENT", calendar_text)
 

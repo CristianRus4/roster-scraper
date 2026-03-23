@@ -30,7 +30,8 @@ PUBLIC_DIR = Path("public")
 PUBLIC_OUTPUT_PATH = PUBLIC_DIR / "roster.ics"
 PUBLIC_INDEX_PATH = PUBLIC_DIR / "index.html"
 PUBLIC_NOJEKYLL_PATH = PUBLIC_DIR / ".nojekyll"
-LOCATION = "Chou Chou\\n1 Taranaki Street, Te Aro, Wellington, 6011"
+LOCATION = "1 Taranaki Street, Te Aro, Wellington, 6011"
+COWORKER_ALLOWED_ROLES = frozenset({"admin", "foh", "manager"})
 CALENDAR_NAME = "Cristian Rus Roster"
 PRODID = "-//roster-scraper//Cristian Rus Roster//EN"
 
@@ -52,6 +53,7 @@ class ShiftEvent:
     staff_name: str
     role_name: str
     jobs: tuple[str, ...]
+    breaks_display: tuple[str, ...]
     start: dt.datetime
     end: dt.datetime
 
@@ -182,6 +184,129 @@ def fetch_roster_payload(config: PublicRosterConfig, start: dt.datetime, end: dt
     return payload
 
 
+def company_display_name(company_name: str) -> str:
+    return company_name.replace(" ", "")
+
+
+def get_employee_id(payload: dict[str, Any], employee_name: str) -> str:
+    staff = payload.get("staff")
+    if not isinstance(staff, list):
+        raise ScraperError("Roster payload must include list value for staff")
+
+    employee = next((member for member in staff if member.get("name") == employee_name), None)
+    if employee is None:
+        raise ScraperError(f"Employee {employee_name!r} was not found in the public roster")
+
+    employee_id = employee.get("id")
+    if not employee_id:
+        raise ScraperError(f"Employee {employee_name!r} is missing an id in the roster payload")
+
+    return employee_id
+
+
+def _parse_iso_datetime(value: Any) -> dt.datetime | None:
+    if value is None or value == "":
+        return None
+    if isinstance(value, (int, float)):
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        return dt.datetime.fromisoformat(text)
+    except ValueError:
+        return None
+
+
+def format_shift_breaks(raw: Any, reference: dt.datetime) -> tuple[str, ...]:
+    """Turn API `breaks` entries into display lines (start/end times or duration)."""
+    if not isinstance(raw, list) or not raw:
+        return ()
+
+    tz = reference.tzinfo or dt.timezone.utc
+    lines: list[str] = []
+    for i, br in enumerate(raw, start=1):
+        if not isinstance(br, dict):
+            continue
+        start: dt.datetime | None = None
+        end: dt.datetime | None = None
+        for key in ("startTime", "clockinTime", "start"):
+            if key in br:
+                start = _parse_iso_datetime(br.get(key))
+                if start is not None:
+                    break
+        for key in ("endTime", "clockoutTime", "end"):
+            if key in br:
+                end = _parse_iso_datetime(br.get(key))
+                if end is not None:
+                    break
+        if start is not None and end is not None:
+            if start.tzinfo is None:
+                start = start.replace(tzinfo=tz)
+            if end.tzinfo is None:
+                end = end.replace(tzinfo=tz)
+            ls = start.astimezone(tz)
+            le = end.astimezone(tz)
+            if ls.date() == le.date():
+                lines.append(f"Break {i}: {ls:%I:%M%p} – {le:%I:%M%p} ({ls:%A %d/%m/%Y})")
+            else:
+                lines.append(f"Break {i}: {ls:%I:%M%p %d/%m} – {le:%I:%M%p %d/%m}")
+        else:
+            duration = br.get("durationMinutes")
+            if duration is not None:
+                lines.append(f"Break {i}: {duration} minutes")
+
+    return tuple(lines)
+
+
+def overlapping_coworkers(payload: dict[str, Any], employee_id: str, shift: ShiftEvent) -> list[tuple[str, str, str]]:
+    """Other staff on rostered shifts that overlap this shift; (name, role, their shift id)."""
+    staff = payload.get("staff")
+    rostered_shifts = payload.get("rosteredShifts")
+    if not isinstance(staff, list) or not isinstance(rostered_shifts, list):
+        return []
+
+    id_to_name: dict[str, str] = {}
+    for member in staff:
+        mid = member.get("id")
+        if mid:
+            id_to_name[str(mid)] = (member.get("name") or "").strip()
+
+    seen_ids: set[str] = set()
+    out: list[tuple[str, str, str]] = []
+    for item in rostered_shifts:
+        sid = item.get("staffMemberId")
+        if not sid or sid == employee_id:
+            continue
+        coworker_shift_id = item.get("id")
+        if not coworker_shift_id:
+            continue
+        start_raw = item.get("clockinTime")
+        end_raw = item.get("clockoutTime")
+        if not start_raw or not end_raw:
+            continue
+        other_start = dt.datetime.fromisoformat(start_raw)
+        other_end = dt.datetime.fromisoformat(end_raw)
+        if not (shift.start < other_end and shift.end > other_start):
+            continue
+        role_name = (item.get("roleName") or "").strip()
+        if role_name.lower() not in COWORKER_ALLOWED_ROLES:
+            continue
+        name = id_to_name.get(str(sid), "")
+        if not name:
+            continue
+        key = str(sid)
+        if key in seen_ids:
+            continue
+        seen_ids.add(key)
+        out.append((name, role_name, str(coworker_shift_id)))
+
+    out.sort(key=lambda pair: (pair[0].lower(), pair[1].lower(), pair[2].lower()))
+    return out
+
+
 def parse_jobs(raw_jobs: Any) -> tuple[str, ...]:
     if raw_jobs in (None, "", []):
         return ()
@@ -200,18 +325,11 @@ def parse_jobs(raw_jobs: Any) -> tuple[str, ...]:
 
 
 def extract_employee_shifts(payload: dict[str, Any], employee_name: str) -> list[ShiftEvent]:
-    staff = payload.get("staff")
     rostered_shifts = payload.get("rosteredShifts")
-    if not isinstance(staff, list) or not isinstance(rostered_shifts, list):
+    if not isinstance(rostered_shifts, list):
         raise ScraperError("Roster payload must include list values for staff and rosteredShifts")
 
-    employee = next((member for member in staff if member.get("name") == employee_name), None)
-    if employee is None:
-        raise ScraperError(f"Employee {employee_name!r} was not found in the public roster")
-
-    employee_id = employee.get("id")
-    if not employee_id:
-        raise ScraperError(f"Employee {employee_name!r} is missing an id in the roster payload")
+    employee_id = get_employee_id(payload, employee_name)
 
     shifts: list[ShiftEvent] = []
     for item in rostered_shifts:
@@ -224,6 +342,7 @@ def extract_employee_shifts(payload: dict[str, Any], employee_name: str) -> list
             raise ScraperError(f"Malformed shift payload for employee {employee_name!r}: {item!r}")
         start = dt.datetime.fromisoformat(start_raw)
         end = dt.datetime.fromisoformat(end_raw)
+        breaks_display = format_shift_breaks(item.get("breaks"), start)
         shifts.append(
             ShiftEvent(
                 shift_id=shift_id,
@@ -231,6 +350,7 @@ def extract_employee_shifts(payload: dict[str, Any], employee_name: str) -> list
                 staff_name=employee_name,
                 role_name=(item.get("roleName") or "").strip(),
                 jobs=parse_jobs(item.get("jobs")),
+                breaks_display=breaks_display,
                 start=start,
                 end=end,
             )
@@ -272,12 +392,32 @@ def format_utc_timestamp(value: dt.datetime) -> str:
     return value.astimezone(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
-def render_event(shift: ShiftEvent, generated_at: dt.datetime, company_name: str) -> list[str]:
-    summary = company_name
+def render_event(
+    shift: ShiftEvent,
+    generated_at: dt.datetime,
+    company_name: str,
+    payload: dict[str, Any],
+    employee_id: str,
+) -> list[str]:
+    display_name = company_display_name(company_name)
+    summary = display_name
     if shift.role_name:
-        summary = f"{company_name} ({shift.role_name})"
+        summary = f"{display_name} ({shift.role_name})"
 
-    description_parts = [f"Staff: {shift.staff_name}"]
+    description_parts: list[str] = []
+
+    if shift.breaks_display:
+        description_parts.extend(shift.breaks_display)
+        description_parts.append("")
+
+    coworkers = overlapping_coworkers(payload, employee_id, shift)
+    if coworkers:
+        description_parts.append("Working with:")
+        for name, role, coworker_shift_id in coworkers:
+            description_parts.append(f"- {name} — {role} — {coworker_shift_id}")
+        description_parts.append("")
+
+    description_parts.append(f"Staff: {shift.staff_name}")
     if shift.role_name:
         description_parts.append(f"Role: {shift.role_name}")
     if shift.jobs:
@@ -302,7 +442,13 @@ def render_event(shift: ShiftEvent, generated_at: dt.datetime, company_name: str
     return [fold_ical_line(line) for line in lines]
 
 
-def render_calendar(shifts: list[ShiftEvent], company_name: str, generated_at: dt.datetime | None = None) -> str:
+def render_calendar(
+    shifts: list[ShiftEvent],
+    company_name: str,
+    payload: dict[str, Any],
+    employee_id: str,
+    generated_at: dt.datetime | None = None,
+) -> str:
     generated_at = generated_at or dt.datetime.now(dt.timezone.utc)
     lines = [
         "BEGIN:VCALENDAR",
@@ -314,7 +460,7 @@ def render_calendar(shifts: list[ShiftEvent], company_name: str, generated_at: d
         f"X-WR-TIMEZONE:{escape_ical_text('Pacific/Auckland')}",
     ]
     for shift in shifts:
-        lines.extend(render_event(shift, generated_at, company_name))
+        lines.extend(render_event(shift, generated_at, company_name, payload, employee_id))
     lines.append("END:VCALENDAR")
     return "\r\n".join(lines) + "\r\n"
 
@@ -324,11 +470,12 @@ def render_summary(shifts: list[ShiftEvent], company_name: str) -> str:
         return "No upcoming shifts found.\n"
 
     lines = []
+    display_name = company_display_name(company_name)
     for shift in shifts:
         local_start = shift.start.astimezone(ZoneInfo("Pacific/Auckland"))
         local_end = shift.end.astimezone(ZoneInfo("Pacific/Auckland"))
         lines.append(f"Date: {local_start:%A, %d/%m/%Y}")
-        title = company_name if not shift.role_name else f"{company_name} ({shift.role_name})"
+        title = display_name if not shift.role_name else f"{display_name} ({shift.role_name})"
         lines.append(f"Event name: {title}")
         lines.append(f"Time: {local_start:%I:%M%p} -> {local_end:%I:%M%p}")
         if shift.jobs:
@@ -372,9 +519,10 @@ def main() -> int:
     start, end = calculate_window(preferences, weeks_ahead=weeks_ahead)
     payload = fetch_roster_payload(config, start, end)
     shifts = extract_employee_shifts(payload, employee_name)
+    employee_id = get_employee_id(payload, employee_name)
     company_name = preferences.company_name.strip() or "Roster"
     calendar_dtstamp = start.astimezone(dt.timezone.utc)
-    calendar_text = render_calendar(shifts, company_name, generated_at=calendar_dtstamp)
+    calendar_text = render_calendar(shifts, company_name, payload, employee_id, generated_at=calendar_dtstamp)
     summary_text = render_summary(shifts, company_name)
     write_outputs(calendar_text, summary_text)
     print(
