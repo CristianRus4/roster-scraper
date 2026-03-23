@@ -9,11 +9,14 @@ BEGIN:VEVENT
 UID:f03f9e68564ffa4d-887d8ba2-49af-4309-0aef-08de7d40410a@roster-scraper
 DTSTAMP:20260322T160000Z
 DTSTART:20260324T040000Z
-DTEND:20260324T083000Z
-SUMMARY:Chou Chou (FOH)
-DESCRIPTION:Staff: Cristian Rus\nRole: FOH\nShift ID: 887d8ba2-49af-4309-0a
- ef-08de7d40410a
-LOCATION:Chou Chou\\n1 Taranaki Street\, Te Aro\, Wellington\, 6011
+DTEND:20260324T073000Z
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Working with:\n- Aidan Renshaw — FOH — 0d9a9310-568d-4082-1
+ 1ce-08de82bf3778\n- Maria Vittoria Benetti — Manager — cab49d7a-aa7e-4e
+ 27-a9d3-08de7d5d5f5e\n- Sofia Castro — FOH — c1481a96-8ffd-4680-3c97-08
+ de7d40b002\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: 887d8ba2-49af-4309-
+ 0aef-08de7d40410a
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
@@ -22,10 +25,13 @@ UID:54435a7497f3b90c-0f443797-2bc6-4ffa-249b-08de847822c3@roster-scraper
 DTSTAMP:20260322T160000Z
 DTSTART:20260331T043000Z
 DTEND:20260331T080000Z
-SUMMARY:Chou Chou (FOH)
-DESCRIPTION:Staff: Cristian Rus\nRole: FOH\nShift ID: 0f443797-2bc6-4ffa-24
- 9b-08de847822c3
-LOCATION:Chou Chou\\n1 Taranaki Street\, Te Aro\, Wellington\, 6011
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Working with:\n- Aidan Renshaw — FOH — 3e912e8a-81e4-4986-1
+ 384-08de84773526\n- Amber Field — Manager — 180129f6-445f-4ab6-f869-08d
+ e8477abc0\n- Sofia Castro — FOH — de4b44b3-fa48-41cd-6e80-08de883a7b14\
+ n- Sophie Haddow — FOH — 0850bdf5-4c23-4740-31ff-08de847741de\n\nStaff:
+  Cristian Rus\nRole: FOH\nShift ID: 0f443797-2bc6-4ffa-249b-08de847822c3
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
@@ -34,10 +40,15 @@ UID:1f3f0a9ecf003ff5-b056768e-77dc-4547-6e92-08de883a7b14@roster-scraper
 DTSTAMP:20260322T160000Z
 DTSTART:20260402T040000Z
 DTEND:20260402T070000Z
-SUMMARY:Chou Chou (FOH)
-DESCRIPTION:Staff: Cristian Rus\nRole: FOH\nShift ID: b056768e-77dc-4547-6e
- 92-08de883a7b14
-LOCATION:Chou Chou\\n1 Taranaki Street\, Te Aro\, Wellington\, 6011
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Working with:\n- Aidan Renshaw — FOH — 3ea3b4d1-0161-4207-d
+ 831-08de88383e85\n- Cara  O’Brien — Manager — 07385341-9651-449a-3250
+ -08de847741de\n- Emily Robinson — FOH — c4df8586-e87c-4d4e-d834-08de883
+ 83e85\n- Ruby Thomas — FOH — d3984f05-ca81-45a7-d9aa-08de8852d07e\n- So
+ phie Haddow — FOH — ee612418-0035-422b-d9ad-08de8852d07e\n- Sylvie Luca
+ s — FOH — a9b2f954-27bb-4b41-da2c-08de8852d07e\n\nStaff: Cristian Rus\n
+ Role: FOH\nShift ID: b056768e-77dc-4547-6e92-08de883a7b14
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
@@ -46,10 +57,15 @@ UID:9907824b93082d60-83a9b504-4648-42ee-b2a3-08de84781eb7@roster-scraper
 DTSTAMP:20260322T160000Z
 DTSTART:20260405T050000Z
 DTEND:20260405T083000Z
-SUMMARY:Chou Chou (FOH)
-DESCRIPTION:Staff: Cristian Rus\nRole: FOH\nShift ID: 83a9b504-4648-42ee-b2
- a3-08de84781eb7
-LOCATION:Chou Chou\\n1 Taranaki Street\, Te Aro\, Wellington\, 6011
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Working with:\n- Aidan Renshaw — Manager — 598a25b5-65f7-42
+ 59-1382-08de84773526\n- Amber Field — FOH — 66fae195-1a2c-4a3b-d87e-08d
+ e88383e85\n- Cara  O’Brien — FOH — 10a527f6-19a2-41a8-8c0b-08de8479dc
+ bc\n- Leah  Brough — FOH — c70f362a-1d96-46da-6e88-08de883a7b14\n- Neev
+ e Campbell — FOH — 456c6b1a-b590-4df8-f7ac-08de8478cd60\n- Siena-Rose R
+ emacha — FOH — 329274ae-fb02-4998-f96d-08de8477abc0\n\nStaff: Cristian 
+ Rus\nRole: FOH\nShift ID: 83a9b504-4648-42ee-b2a3-08de84781eb7
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
