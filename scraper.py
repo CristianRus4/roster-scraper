@@ -18,7 +18,7 @@ from zoneinfo import ZoneInfo
 
 API_BASE_URL = "https://loadedhub.com/api"
 DEFAULT_EMPLOYEE_NAME = "Cristian Rus"
-DEFAULT_WEEKS_AHEAD = 2
+DEFAULT_WEEKS_AHEAD = 4
 DEFAULT_PUBLIC_ROSTER_URL = (
     "https://loadedhub.com/App/PublicRoster#/roster/"
     "03138d50-b542-4ca2-952f-8756ef67c2ba/"

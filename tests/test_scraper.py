@@ -30,7 +30,7 @@ class ParsePublicRosterUrlTests(unittest.TestCase):
 
 
 class WindowCalculationTests(unittest.TestCase):
-    def test_calculates_three_week_window_from_current_roster_week(self):
+    def test_calculates_five_week_window_from_current_roster_week(self):
         preferences = scraper.Preferences(
             week_start=1,
             day_start=dt.time(5, 0, 0),
@@ -38,9 +38,9 @@ class WindowCalculationTests(unittest.TestCase):
             company_name="Chou Chou",
         )
         now = dt.datetime(2026, 3, 10, 4, 30, tzinfo=dt.timezone(dt.timedelta(hours=13)))
-        start, end = scraper.calculate_window(preferences, now=now, weeks_ahead=2)
+        start, end = scraper.calculate_window(preferences, now=now, weeks_ahead=4)
         self.assertEqual(start.isoformat(), "2026-03-09T05:00:00+13:00")
-        self.assertEqual(end.isoformat(), "2026-03-30T05:00:00+13:00")
+        self.assertEqual(end.isoformat(), "2026-04-13T05:00:00+12:00")
 
 
 class PayloadTests(unittest.TestCase):
