@@ -48,18 +48,4 @@ LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
-BEGIN:VEVENT
-UID:cf67936e2673f9a5-9224c54c-fab0-43fb-5c8c-08de8dc0d0f4@roster-scraper
-DTSTAMP:20260329T160000Z
-DTSTART:20260407T050000Z
-DTEND:20260407T080000Z
-SUMMARY:ChouChou (FOH)
-DESCRIPTION:Break 1: 07:00PM – 07:30PM (Tuesday 07/04/2026)\n\nWorking wi
- th:\n- Aidan Renshaw — FOH\n- Cara  O’Brien — Manager\n- Maria Vittor
- ia Benetti — FOH\n- Sofia Castro — FOH\n- Sophie Haddow — FOH\n\nStaf
- f: Cristian Rus\nRole: FOH\nShift ID: 9224c54c-fab0-43fb-5c8c-08de8dc0d0f4
-LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
 END:VCALENDAR
