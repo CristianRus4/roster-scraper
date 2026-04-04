@@ -48,4 +48,46 @@ LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
+BEGIN:VEVENT
+UID:cf67936e2673f9a5-9224c54c-fab0-43fb-5c8c-08de8dc0d0f4@roster-scraper
+DTSTAMP:20260329T160000Z
+DTSTART:20260407T050000Z
+DTEND:20260407T080000Z
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Break 1: 07:00PM – 07:30PM (Tuesday 07/04/2026)\n\nWorking wi
+ th:\n- Aidan Renshaw — FOH\n- Cara  O’Brien — Manager\n- Maria Vittor
+ ia Benetti — FOH\n- Sofia Castro — FOH\n- Sophie Haddow — FOH\n\nStaf
+ f: Cristian Rus\nRole: FOH\nShift ID: 9224c54c-fab0-43fb-5c8c-08de8dc0d0f4
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:6f66c83aea87ace2-bba9d9ea-4294-41a5-745a-08de90e50b86@roster-scraper
+DTSTAMP:20260329T160000Z
+DTSTART:20260409T050000Z
+DTEND:20260409T080000Z
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Break 1: 07:00PM – 07:30PM (Thursday 09/04/2026)\n\nWorking w
+ ith:\n- Aidan Renshaw — FOH\n- Amber Field — Manager\n- Cara  O’Brien
+  — FOH\n- Ruby Thomas — Admin\n- Sofia Castro — FOH\n\nStaff: Cristia
+ n Rus\nRole: FOH\nShift ID: bba9d9ea-4294-41a5-745a-08de90e50b86
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:4465f0dfd1fe555d-e73304be-aa9d-4bc8-7add-08de90e82282@roster-scraper
+DTSTAMP:20260329T160000Z
+DTSTART:20260411T050000Z
+DTEND:20260411T080000Z
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Working with:\n- Aidan Renshaw — Manager\n- Amber Field — F
+ OH\n- Emily Robinson — FOH\n- Maria Vittoria Benetti — FOH\n- Ruby Thom
+ as — FOH\n- Sofia Castro — FOH\n- Sophie Haddow — FOH\n\nStaff: Crist
+ ian Rus\nRole: FOH\nShift ID: e73304be-aa9d-4bc8-7add-08de90e82282
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
 END:VCALENDAR
