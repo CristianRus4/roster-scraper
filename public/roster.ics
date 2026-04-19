@@ -32,4 +32,31 @@ LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
+BEGIN:VEVENT
+UID:4dbc5771ab2e48d6-1727e0f4-e2ae-48ca-af10-08de927653c2@roster-scraper
+DTSTAMP:20260412T170000Z
+DTSTART:20260422T060000Z
+DTEND:20260422T080000Z
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Working with:\n- Amber Field — Manager\n- Farina Anchico — 
+ FOH\n- Sofia Castro — FOH\n- Sophie Haddow — FOH\n\nStaff: Cristian Rus
+ \nRole: FOH\nShift ID: 1727e0f4-e2ae-48ca-af10-08de927653c2
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:faab31889ca640f8-25b4729a-a770-4794-d76e-08de98c361fe@roster-scraper
+DTSTAMP:20260412T170000Z
+DTSTART:20260423T060000Z
+DTEND:20260423T080000Z
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Working with:\n- Aidan Renshaw — FOH\n- Amber Field — FOH\n
+ - Cara  O’Brien — Manager\n- Maria Vittoria Benetti — FOH\n- Ruby Tho
+ mas — Admin\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: 25b4729a-a770-47
+ 94-d76e-08de98c361fe
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
 END:VCALENDAR
