@@ -1,11 +1,3 @@
-Date: Tuesday, 14/04/2026
-Event name: ChouChou (FOH)
-Time: 05:00PM -> 08:30PM
-----------------------------------------
-Date: Sunday, 19/04/2026
-Event name: ChouChou (FOH)
-Time: 05:00PM -> 08:00PM
-----------------------------------------
 Date: Wednesday, 22/04/2026
 Event name: ChouChou (FOH)
 Time: 06:00PM -> 08:00PM
@@ -13,4 +5,12 @@ Time: 06:00PM -> 08:00PM
 Date: Thursday, 23/04/2026
 Event name: ChouChou (FOH)
 Time: 06:00PM -> 08:00PM
+----------------------------------------
+Date: Tuesday, 28/04/2026
+Event name: ChouChou (FOH)
+Time: 05:00PM -> 08:00PM
+----------------------------------------
+Date: Saturday, 02/05/2026
+Event name: ChouChou (FOH)
+Time: 05:30PM -> 08:00PM
 ----------------------------------------
