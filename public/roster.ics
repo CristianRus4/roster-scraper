@@ -6,20 +6,6 @@ METHOD:PUBLISH
 X-WR-CALNAME:Cristian Rus Roster
 X-WR-TIMEZONE:Pacific/Auckland
 BEGIN:VEVENT
-UID:faab31889ca640f8-25b4729a-a770-4794-d76e-08de98c361fe@roster-scraper
-DTSTAMP:20260419T170000Z
-DTSTART:20260423T060000Z
-DTEND:20260423T080000Z
-SUMMARY:ChouChou (FOH)
-DESCRIPTION:Working with:\n- Aidan Renshaw — FOH\n- Amber Field — FOH\n
- - Cara  O’Brien — Manager\n- Maria Vittoria Benetti — FOH\n- Ruby Tho
- mas — Admin\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: 25b4729a-a770-47
- 94-d76e-08de98c361fe
-LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
-BEGIN:VEVENT
 UID:304954d7040f5770-4bdf4218-d1fe-4e95-b5f3-08de927653c2@roster-scraper
 DTSTAMP:20260419T170000Z
 DTSTART:20260428T050000Z
