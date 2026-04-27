@@ -7,7 +7,7 @@ X-WR-CALNAME:Cristian Rus Roster
 X-WR-TIMEZONE:Pacific/Auckland
 BEGIN:VEVENT
 UID:304954d7040f5770-4bdf4218-d1fe-4e95-b5f3-08de927653c2@roster-scraper
-DTSTAMP:20260419T170000Z
+DTSTAMP:20260426T170000Z
 DTSTART:20260428T050000Z
 DTEND:20260428T080000Z
 SUMMARY:ChouChou (FOH)
@@ -20,7 +20,7 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:4768bb03a760c679-17c34092-cd97-4985-0ea6-08de9e493bec@roster-scraper
-DTSTAMP:20260419T170000Z
+DTSTAMP:20260426T170000Z
 DTSTART:20260502T053000Z
 DTEND:20260502T080000Z
 SUMMARY:ChouChou (FOH)
@@ -28,6 +28,35 @@ DESCRIPTION:Working with:\n- Aidan Renshaw — Manager\n- Amber Field — F
  OH\n- Cara  O’Brien — FOH\n- Cody  Brinsdon-Hall — FOH\n- Sophie Hadd
  ow — FOH\n- Sylvie Lucas — FOH\n\nStaff: Cristian Rus\nRole: FOH\nShift
   ID: 17c34092-cd97-4985-0ea6-08de9e493bec
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:ce51294a9b3054a6-bddb091b-9bc2-420f-f783-08de9e456803@roster-scraper
+DTSTAMP:20260426T170000Z
+DTSTART:20260506T053000Z
+DTEND:20260506T080000Z
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Break 1: 06:30PM – 07:00PM (Wednesday 06/05/2026)\n\nWorking 
+ with:\n- Amber Field — Manager\n- Cara  O’Brien — FOH\n- Cody  Brinsd
+ on-Hall — FOH\n- Sofia Castro — FOH\n\nStaff: Cristian Rus\nRole: FOH\n
+ Shift ID: bddb091b-9bc2-420f-f783-08de9e456803
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:6dcf80b7e9aaa22d-c504e24d-e883-492a-dd2c-08de9d56940e@roster-scraper
+DTSTAMP:20260426T170000Z
+DTSTART:20260510T053000Z
+DTEND:20260510T080000Z
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Break 1: 06:30PM – 07:00PM (Sunday 10/05/2026)\n\nWorking wit
+ h:\n- Aidan Renshaw — FOH\n- Cara  O’Brien — FOH\n- Cody  Brinsdon-Ha
+ ll — FOH\n- Farina Anchico — FOH\n- Maria Vittoria Benetti — Manager\
+ n- Neeve Campbell — FOH\n- Sophie Haddow — FOH\n\nStaff: Cristian Rus\n
+ Role: FOH\nShift ID: c504e24d-e883-492a-dd2c-08de9d56940e
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
