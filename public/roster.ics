@@ -20,21 +20,6 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
-UID:6dcf80b7e9aaa22d-c504e24d-e883-492a-dd2c-08de9d56940e@roster-scraper
-DTSTAMP:20260503T170000Z
-DTSTART:20260510T053000Z
-DTEND:20260510T080000Z
-SUMMARY:ChouChou (FOH)
-DESCRIPTION:Break 1: 06:30PM – 07:00PM (Sunday 10/05/2026)\n\nWorking wit
- h:\n- Aidan Renshaw — FOH\n- Cara  O’Brien — FOH\n- Cody  Brinsdon-Ha
- ll — FOH\n- Farina Anchico — FOH\n- Maria Vittoria Benetti — Manager\
- n- Neeve Campbell — FOH\n- Sophie Haddow — FOH\n\nStaff: Cristian Rus\n
- Role: FOH\nShift ID: c504e24d-e883-492a-dd2c-08de9d56940e
-LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
-BEGIN:VEVENT
 UID:32e1a2d966026cad-6ee20cbf-8911-4f0a-b9e9-08dea55b55b5@roster-scraper
 DTSTAMP:20260503T170000Z
 DTSTART:20260512T053000Z

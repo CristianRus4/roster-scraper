@@ -2,10 +2,6 @@ Date: Wednesday, 06/05/2026
 Event name: ChouChou (FOH)
 Time: 05:30PM -> 08:00PM
 ----------------------------------------
-Date: Sunday, 10/05/2026
-Event name: ChouChou (FOH)
-Time: 05:30PM -> 08:00PM
-----------------------------------------
 Date: Tuesday, 12/05/2026
 Event name: ChouChou (FOH)
 Time: 05:30PM -> 08:00PM
