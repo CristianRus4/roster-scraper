@@ -20,27 +20,15 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
-UID:32e1a2d966026cad-6ee20cbf-8911-4f0a-b9e9-08dea55b55b5@roster-scraper
-DTSTAMP:20260503T170000Z
-DTSTART:20260512T053000Z
-DTEND:20260512T080000Z
-SUMMARY:ChouChou (FOH)
-DESCRIPTION:Working with:\n- Aidan Renshaw — FOH\n- Maria Vittoria Benett
- i — Manager\n- Sofia Castro — FOH\n\nStaff: Cristian Rus\nRole: FOH\nSh
- ift ID: 6ee20cbf-8911-4f0a-b9e9-08dea55b55b5
-LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
-BEGIN:VEVENT
 UID:dd6e8743c6550a0a-1ecfd459-0b1e-4d21-cd87-08deaba89884@roster-scraper
 DTSTAMP:20260503T170000Z
-DTSTART:20260515T050000Z
+DTSTART:20260515T053000Z
 DTEND:20260515T080000Z
 SUMMARY:ChouChou (FOH)
 DESCRIPTION:Working with:\n- Amber Field — Manager\n- Cara  O’Brien —
-  FOH\n- Maria Vittoria Benetti — FOH\n- Sophie Haddow — FOH\n\nStaff: C
- ristian Rus\nRole: FOH\nShift ID: 1ecfd459-0b1e-4d21-cd87-08deaba89884
+  FOH\n- Cody  Brinsdon-Hall — FOH\n- Maria Vittoria Benetti — FOH\n- So
+ phie Haddow — FOH\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: 1ecfd459-0
+ b1e-4d21-cd87-08deaba89884
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
