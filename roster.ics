@@ -6,22 +6,8 @@ METHOD:PUBLISH
 X-WR-CALNAME:Cristian Rus Roster
 X-WR-TIMEZONE:Pacific/Auckland
 BEGIN:VEVENT
-UID:ce51294a9b3054a6-bddb091b-9bc2-420f-f783-08de9e456803@roster-scraper
-DTSTAMP:20260503T170000Z
-DTSTART:20260506T053000Z
-DTEND:20260506T080000Z
-SUMMARY:ChouChou (FOH)
-DESCRIPTION:Break 1: 06:30PM – 07:00PM (Wednesday 06/05/2026)\n\nWorking 
- with:\n- Amber Field — Manager\n- Cara  O’Brien — FOH\n- Shift To Fil
- l — FOH\n- Sophie Haddow — FOH\n\nStaff: Cristian Rus\nRole: FOH\nShift
-  ID: bddb091b-9bc2-420f-f783-08de9e456803
-LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
-BEGIN:VEVENT
 UID:dd6e8743c6550a0a-1ecfd459-0b1e-4d21-cd87-08deaba89884@roster-scraper
-DTSTAMP:20260503T170000Z
+DTSTAMP:20260510T170000Z
 DTSTART:20260515T053000Z
 DTEND:20260515T080000Z
 SUMMARY:ChouChou (FOH)
@@ -29,6 +15,19 @@ DESCRIPTION:Working with:\n- Amber Field — Manager\n- Cara  O’Brien —
   FOH\n- Cody  Brinsdon-Hall — FOH\n- Maria Vittoria Benetti — FOH\n- So
  phie Haddow — FOH\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: 1ecfd459-0
  b1e-4d21-cd87-08deaba89884
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:e5c31a87888c48c1-94b3efe4-62d4-4c67-7df4-08dea9691d1c@roster-scraper
+DTSTAMP:20260510T170000Z
+DTSTART:20260524T050000Z
+DTEND:20260524T080000Z
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Working with:\n- Aidan Renshaw — FOH\n- Amber Field — Manag
+ er\n- Cara  O’Brien — FOH\n- Sylvie Lucas — FOH\n\nStaff: Cristian Ru
+ s\nRole: FOH\nShift ID: 94b3efe4-62d4-4c67-7df4-08dea9691d1c
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
