@@ -7,13 +7,40 @@ X-WR-CALNAME:Cristian Rus Roster
 X-WR-TIMEZONE:Pacific/Auckland
 BEGIN:VEVENT
 UID:e5c31a87888c48c1-94b3efe4-62d4-4c67-7df4-08dea9691d1c@roster-scraper
-DTSTAMP:20260510T170000Z
+DTSTAMP:20260517T170000Z
 DTSTART:20260524T050000Z
 DTEND:20260524T080000Z
 SUMMARY:ChouChou (FOH)
 DESCRIPTION:Working with:\n- Aidan Renshaw — FOH\n- Amber Field — Manag
  er\n- Cara  O’Brien — FOH\n- Sylvie Lucas — FOH\n\nStaff: Cristian Ru
  s\nRole: FOH\nShift ID: 94b3efe4-62d4-4c67-7df4-08dea9691d1c
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:79a9ea315c7d863a-1df67e76-c289-42da-934b-08deaec3c8b8@roster-scraper
+DTSTAMP:20260517T170000Z
+DTSTART:20260527T050000Z
+DTEND:20260527T080000Z
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Working with:\n- Cara  O’Brien — Manager\n- Farina Anchico 
+ — FOH\n- Sylvie Lucas — FOH\n\nStaff: Cristian Rus\nRole: FOH\nShift ID
+ : 1df67e76-c289-42da-934b-08deaec3c8b8
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:e57a9c2b375c2bbb-e3deb23e-e454-4268-7e24-08deaecce3f5@roster-scraper
+DTSTAMP:20260517T170000Z
+DTSTART:20260530T050000Z
+DTEND:20260530T080000Z
+SUMMARY:ChouChou (FOH)
+DESCRIPTION:Working with:\n- Amber Field — FOH\n- Cara  O’Brien — Man
+ ager\n- Emily Robinson — FOH\n- Maria Vittoria Benetti — FOH\n- Sophie 
+ Haddow — FOH\n- Sylvie Lucas — FOH\n\nStaff: Cristian Rus\nRole: FOH\nS
+ hift ID: e3deb23e-e454-4268-7e24-08deaecce3f5
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
