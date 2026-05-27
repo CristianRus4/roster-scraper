@@ -171,6 +171,33 @@ class CalendarRenderingTests(unittest.TestCase):
         self.assertIn("BEGIN:VCALENDAR", calendar_text)
         self.assertNotIn("BEGIN:VEVENT", calendar_text)
 
+    def test_valarm_present_in_shift_events(self):
+        calendar_text = scraper.render_calendar(
+            self.shifts, "Chou Chou", self.payload, self.employee_id, generated_at=self.generated_at
+        )
+        self.assertIn("BEGIN:VALARM", calendar_text)
+        self.assertIn("TRIGGER:-PT1H", calendar_text)
+        self.assertNotIn("BEGIN:VALARM", scraper.render_calendar([], "Chou Chou", {}, "", generated_at=self.generated_at))
+
+    def test_accumulate_preserves_old_events(self):
+        import tempfile, os
+        # First run produces events for shift-001 and shift-002
+        first = scraper.render_calendar(
+            self.shifts, "Chou Chou", self.payload, self.employee_id, generated_at=self.generated_at
+        )
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".ics", delete=False, encoding="utf-8") as f:
+            f.write(first)
+            tmp = f.name
+        try:
+            # Second run with no shifts should still contain old events
+            second = scraper.render_calendar(
+                [], "Chou Chou", {}, "", generated_at=self.generated_at, existing_path=scraper.Path(tmp)
+            )
+            self.assertIn("shift-001", second)
+            self.assertIn("shift-002", second)
+        finally:
+            os.unlink(tmp)
+
     def test_escapes_text(self):
         escaped = scraper.escape_ical_text("Hello, world;\nLine 2")
         self.assertEqual(escaped, "Hello\\, world\\;\\nLine 2")

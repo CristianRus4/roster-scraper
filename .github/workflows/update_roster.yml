@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
+    inputs:
+      weeks_back:
+        description: 'Weeks of history to backfill (0 = normal run, 12 = ~3 months)'
+        required: false
+        default: '0'
 
 jobs:
   update-roster:
@@ -19,6 +24,7 @@ jobs:
       PUBLIC_ROSTER_URL: ${{ secrets.PUBLIC_ROSTER_URL || vars.PUBLIC_ROSTER_URL }}
       ROSTER_EMPLOYEE_NAME: Cristian Rus
       ROSTER_WEEKS_AHEAD: '4'
+      ROSTER_WEEKS_BACK: ${{ github.event.inputs.weeks_back || '0' }}
 
     steps:
       - name: Checkout repository

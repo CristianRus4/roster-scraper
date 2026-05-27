@@ -66,20 +66,29 @@ class Preferences:
     company_name: str
 
 
-def load_settings() -> tuple[str, str, int]:
+def load_settings() -> tuple[str, str, int, int]:
     public_roster_url = os.environ.get("PUBLIC_ROSTER_URL", "").strip() or DEFAULT_PUBLIC_ROSTER_URL
     employee_name = os.environ.get("ROSTER_EMPLOYEE_NAME", DEFAULT_EMPLOYEE_NAME).strip() or DEFAULT_EMPLOYEE_NAME
     weeks_ahead_raw = os.environ.get("ROSTER_WEEKS_AHEAD", str(DEFAULT_WEEKS_AHEAD)).strip()
+    weeks_back_raw = os.environ.get("ROSTER_WEEKS_BACK", "0").strip()
 
     try:
         weeks_ahead = int(weeks_ahead_raw)
     except ValueError as exc:
         raise ScraperError(f"ROSTER_WEEKS_AHEAD must be an integer, got {weeks_ahead_raw!r}") from exc
 
+    try:
+        weeks_back = int(weeks_back_raw)
+    except ValueError as exc:
+        raise ScraperError(f"ROSTER_WEEKS_BACK must be an integer, got {weeks_back_raw!r}") from exc
+
     if weeks_ahead < 0:
         raise ScraperError("ROSTER_WEEKS_AHEAD must be zero or greater")
 
-    return public_roster_url, employee_name, weeks_ahead
+    if weeks_back < 0:
+        raise ScraperError("ROSTER_WEEKS_BACK must be zero or greater")
+
+    return public_roster_url, employee_name, weeks_ahead, weeks_back
 
 
 def parse_public_roster_url(public_roster_url: str) -> PublicRosterConfig:
@@ -144,7 +153,7 @@ def api_weekday_to_python(week_start: int) -> int:
     return (week_start - 1) % 7
 
 
-def calculate_window(preferences: Preferences, now: dt.datetime | None = None, weeks_ahead: int = DEFAULT_WEEKS_AHEAD) -> tuple[dt.datetime, dt.datetime]:
+def calculate_window(preferences: Preferences, now: dt.datetime | None = None, weeks_ahead: int = DEFAULT_WEEKS_AHEAD, weeks_back: int = 0) -> tuple[dt.datetime, dt.datetime]:
     tz = ZoneInfo(preferences.timezone)
     current = now.astimezone(tz) if now else dt.datetime.now(tz)
     current_day_start = current.replace(
@@ -161,8 +170,9 @@ def calculate_window(preferences: Preferences, now: dt.datetime | None = None, w
         second=preferences.day_start.second,
         microsecond=0,
     ) - dt.timedelta(days=(effective_current.weekday() - week_start_py) % 7)
+    fetch_start = start_of_week - dt.timedelta(weeks=weeks_back)
     end_of_window = start_of_week + dt.timedelta(days=(weeks_ahead + 1) * 7)
-    return start_of_week, end_of_window
+    return fetch_start, end_of_window
 
 
 def fetch_roster_payload(config: PublicRosterConfig, start: dt.datetime, end: dt.datetime) -> dict[str, Any]:
@@ -491,6 +501,42 @@ def format_utc_timestamp(value: dt.datetime) -> str:
 TRAVEL_MINUTES = 45
 
 
+def load_existing_events(path: Path) -> dict[str, list[str]]:
+    """Parse an existing .ics file and return {uid: lines} for every VEVENT."""
+    if not path.exists():
+        return {}
+    text = path.read_text(encoding="utf-8")
+    # Normalise line endings then split
+    raw_lines = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    events: dict[str, list[str]] = {}
+    in_event = False
+    current: list[str] = []
+    uid: str | None = None
+    for line in raw_lines:
+        if line == "BEGIN:VEVENT":
+            in_event = True
+            current = ["BEGIN:VEVENT"]
+            uid = None
+        elif line == "END:VEVENT" and in_event:
+            current.append("END:VEVENT")
+            if uid:
+                events[uid] = current
+            in_event = False
+            current = []
+        elif in_event:
+            current.append(line)
+            if line.startswith("UID:"):
+                uid = line[4:]
+    return events
+
+
+def _event_dtstart(lines: list[str]) -> str:
+    for line in lines:
+        if line.startswith("DTSTART:"):
+            return line[8:]
+    return ""
+
+
 def render_travel_event(
     shift: ShiftEvent,
     generated_at: dt.datetime,
@@ -558,6 +604,11 @@ def render_event(
         f"LOCATION:{location}",
         "STATUS:CONFIRMED",
         "TRANSP:OPAQUE",
+        "BEGIN:VALARM",
+        "TRIGGER:-PT1H",
+        "ACTION:DISPLAY",
+        "DESCRIPTION:Shift starting in 1 hour",
+        "END:VALARM",
         "END:VEVENT",
     ]
     return [fold_ical_line(line) for line in lines]
@@ -569,9 +620,24 @@ def render_calendar(
     payload: dict[str, Any],
     employee_id: str,
     generated_at: dt.datetime | None = None,
+    existing_path: Path | None = None,
 ) -> str:
     generated_at = generated_at or dt.datetime.now(dt.timezone.utc)
-    lines = [
+
+    # Seed with existing events so old shifts are never dropped
+    accumulated: dict[str, list[str]] = {}
+    if existing_path is not None:
+        accumulated = load_existing_events(existing_path)
+
+    # Generate new events; new version wins if the same UID already exists
+    for shift in shifts:
+        travel_uid = f"travel-{make_uid(shift)}"
+        accumulated[travel_uid] = render_travel_event(shift, generated_at, company_name)
+        accumulated[make_uid(shift)] = render_event(shift, generated_at, company_name, payload, employee_id)
+
+    sorted_events = sorted(accumulated.values(), key=_event_dtstart)
+
+    header = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
         f"PRODID:{PRODID}",
@@ -580,11 +646,11 @@ def render_calendar(
         f"X-WR-CALNAME:{escape_ical_text(CALENDAR_NAME)}",
         f"X-WR-TIMEZONE:{escape_ical_text('Pacific/Auckland')}",
     ]
-    for shift in shifts:
-        lines.extend(render_travel_event(shift, generated_at, company_name))
-        lines.extend(render_event(shift, generated_at, company_name, payload, employee_id))
-    lines.append("END:VCALENDAR")
-    return "\r\n".join(lines) + "\r\n"
+    all_lines: list[str] = header
+    for event_lines in sorted_events:
+        all_lines.extend(event_lines)
+    all_lines.append("END:VCALENDAR")
+    return "\r\n".join(all_lines) + "\r\n"
 
 
 def render_summary(shifts: list[ShiftEvent], company_name: str) -> str:
@@ -635,16 +701,20 @@ def write_outputs(calendar_text: str, summary_text: str) -> None:
 
 
 def main() -> int:
-    public_roster_url, employee_name, weeks_ahead = load_settings()
+    public_roster_url, employee_name, weeks_ahead, weeks_back = load_settings()
     config = parse_public_roster_url(public_roster_url)
     preferences = fetch_preferences(config)
-    start, end = calculate_window(preferences, weeks_ahead=weeks_ahead)
+    start, end = calculate_window(preferences, weeks_ahead=weeks_ahead, weeks_back=weeks_back)
     payload = fetch_roster_payload(config, start, end)
     shifts = extract_employee_shifts(payload, employee_name)
     employee_id = get_employee_id(payload, employee_name)
     company_name = preferences.company_name.strip() or "Roster"
     calendar_dtstamp = start.astimezone(dt.timezone.utc)
-    calendar_text = render_calendar(shifts, company_name, payload, employee_id, generated_at=calendar_dtstamp)
+    calendar_text = render_calendar(
+        shifts, company_name, payload, employee_id,
+        generated_at=calendar_dtstamp,
+        existing_path=PUBLIC_OUTPUT_PATH,
+    )
     summary_text = render_summary(shifts, company_name)
     write_outputs(calendar_text, summary_text)
     print(
