@@ -110,7 +110,7 @@ class SummaryRenderingTests(unittest.TestCase):
         payload = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
         shifts = scraper.extract_employee_shifts(payload, "Cristian Rus")
         summary = scraper.render_summary(shifts, "Chou Chou")
-        self.assertIn("Event name: ChouChou (FOH)", summary)
+        self.assertIn("Event name: ChouChou", summary)
 
 
 class CalendarRenderingTests(unittest.TestCase):
@@ -144,7 +144,8 @@ class CalendarRenderingTests(unittest.TestCase):
         calendar_text = scraper.render_calendar(
             self.shifts, "Chou Chou", self.payload, self.employee_id, generated_at=self.generated_at
         )
-        self.assertIn("SUMMARY:ChouChou (FOH)", calendar_text)
+        self.assertIn("SUMMARY:ChouChou\r\n", calendar_text)
+        self.assertIn("SUMMARY:Travel to ChouChou\r\n", calendar_text)
         self.assertIn("LOCATION:1 Taranaki Street\\, Te Aro\\, Wellington\\, 6011", calendar_text)
 
     def test_working_with_lists_overlapping_allowed_roles_only(self):

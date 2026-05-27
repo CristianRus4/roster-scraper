@@ -488,6 +488,33 @@ def format_utc_timestamp(value: dt.datetime) -> str:
     return value.astimezone(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
+TRAVEL_MINUTES = 45
+
+
+def render_travel_event(
+    shift: ShiftEvent,
+    generated_at: dt.datetime,
+    company_name: str,
+) -> list[str]:
+    display_name = company_display_name(company_name)
+    travel_end = shift.start
+    travel_start = travel_end - dt.timedelta(minutes=TRAVEL_MINUTES)
+    uid = f"travel-{make_uid(shift)}"
+    lines = [
+        "BEGIN:VEVENT",
+        f"UID:{uid}",
+        f"DTSTAMP:{format_utc_timestamp(generated_at)}",
+        f"DTSTART:{format_utc_timestamp(travel_start)}",
+        f"DTEND:{format_utc_timestamp(travel_end)}",
+        f"SUMMARY:{escape_ical_text(f'Travel to {display_name}')}",
+        f"LOCATION:{escape_ical_text(LOCATION)}",
+        "STATUS:CONFIRMED",
+        "TRANSP:OPAQUE",
+        "END:VEVENT",
+    ]
+    return [fold_ical_line(line) for line in lines]
+
+
 def render_event(
     shift: ShiftEvent,
     generated_at: dt.datetime,
@@ -497,8 +524,6 @@ def render_event(
 ) -> list[str]:
     display_name = company_display_name(company_name)
     summary = display_name
-    if shift.role_name:
-        summary = f"{display_name} ({shift.role_name})"
 
     description_parts: list[str] = []
 
@@ -556,6 +581,7 @@ def render_calendar(
         f"X-WR-TIMEZONE:{escape_ical_text('Pacific/Auckland')}",
     ]
     for shift in shifts:
+        lines.extend(render_travel_event(shift, generated_at, company_name))
         lines.extend(render_event(shift, generated_at, company_name, payload, employee_id))
     lines.append("END:VCALENDAR")
     return "\r\n".join(lines) + "\r\n"
@@ -571,7 +597,7 @@ def render_summary(shifts: list[ShiftEvent], company_name: str) -> str:
         local_start = shift.start.astimezone(ZoneInfo("Pacific/Auckland"))
         local_end = shift.end.astimezone(ZoneInfo("Pacific/Auckland"))
         lines.append(f"Date: {local_start:%A, %d/%m/%Y}")
-        title = display_name if not shift.role_name else f"{display_name} ({shift.role_name})"
+        title = display_name
         lines.append(f"Event name: {title}")
         lines.append(f"Time: {local_start:%I:%M%p} -> {local_end:%I:%M%p}")
         if shift.jobs:
