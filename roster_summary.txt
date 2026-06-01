@@ -1,12 +1,12 @@
-Date: Wednesday, 27/05/2026
-Event name: ChouChou
-Time: 05:00PM -> 08:00PM
-----------------------------------------
-Date: Saturday, 30/05/2026
-Event name: ChouChou
-Time: 05:00PM -> 08:00PM
-----------------------------------------
 Date: Thursday, 04/06/2026
 Event name: ChouChou
 Time: 05:00PM -> 08:00PM
+----------------------------------------
+Date: Friday, 12/06/2026
+Event name: ChouChou
+Time: 05:00PM -> 08:00PM
+----------------------------------------
+Date: Sunday, 14/06/2026
+Event name: ChouChou
+Time: 05:00PM -> 08:30PM
 ----------------------------------------
