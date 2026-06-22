@@ -1,8 +1,4 @@
-Date: Friday, 19/06/2026
-Event name: ChouChou
-Time: 05:00PM -> 08:00PM
-----------------------------------------
-Date: Sunday, 21/06/2026
+Date: Thursday, 02/07/2026
 Event name: ChouChou
 Time: 05:00PM -> 08:00PM
 ----------------------------------------
