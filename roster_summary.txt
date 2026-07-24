@@ -2,7 +2,3 @@ Date: Sunday, 26/07/2026
 Event name: ChouChou
 Time: 05:00PM -> 08:00PM
 ----------------------------------------
-Date: Tuesday, 28/07/2026
-Event name: ChouChou
-Time: 05:30PM -> 08:30PM
-----------------------------------------
