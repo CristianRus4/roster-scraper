@@ -777,9 +777,9 @@ DTSTART:20260814T053000Z
 DTEND:20260814T083000Z
 SUMMARY:ChouChou
 DESCRIPTION:Working with:\n- Aidan Renshaw — Manager\n- Amber Field — F
- OH\n- Cara  O’Brien — FOH\n- Emily Robinson — Manager\n- Neeve Campbe
- ll — FOH\n- Ruby Thomas — Admin\n\nStaff: Cristian Rus\nRole: FOH\nShif
- t ID: ae41f017-4822-48d2-0f0a-08def19097bf
+ OH\n- Cara  O’Brien — FOH\n- Neeve Campbell — FOH\n- Ruby Thomas — 
+ Admin\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: ae41f017-4822-48d2-0f0a-
+ 08def19097bf
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
@@ -818,9 +818,9 @@ DTSTART:20260815T053000Z
 DTEND:20260815T083000Z
 SUMMARY:ChouChou
 DESCRIPTION:Working with:\n- Aidan Renshaw — FOH\n- Amber Field — Manag
- er\n- Cara  O’Brien — FOH\n- Emily Robinson — FOH\n- Ruby Thomas — 
- FOH\n- Sofia Castro — FOH\n- Sylvie Lucas — FOH\n\nStaff: Cristian Rus\
- nRole: FOH\nShift ID: 968f35b1-c196-47b3-0f14-08def19097bf
+ er\n- Cara  O’Brien — FOH\n- Ruby Thomas — FOH\n- Sofia Castro — FO
+ H\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: 968f35b1-c196-47b3-0f14-08de
+ f19097bf
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
@@ -829,6 +829,17 @@ TRIGGER:-PT1H
 ACTION:DISPLAY
 DESCRIPTION:Shift starting in 1 hour
 END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:travel-2ccd8d4b9c402e7b-5ce23b6f-d507-4fb9-56d3-08def3441816@roster-scr
+ aper
+DTSTAMP:20260809T170000Z
+DTSTART:20260818T044500Z
+DTEND:20260818T053000Z
+SUMMARY:Travel to ChouChou
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:travel-2ccd8d4b9c402e7b-5ce23b6f-d507-4fb9-56d3-08def3441816@roster-scr
@@ -859,6 +870,17 @@ TRIGGER:-PT1H
 ACTION:DISPLAY
 DESCRIPTION:Shift starting in 1 hour
 END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:travel-ea3a39300465e137-d24b4345-3ec4-4ac0-6762-08def7159bac@roster-scr
+ aper
+DTSTAMP:20260809T170000Z
+DTSTART:20260820T044500Z
+DTEND:20260820T053000Z
+SUMMARY:Travel to ChouChou
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:travel-ea3a39300465e137-d24b4345-3ec4-4ac0-6762-08def7159bac@roster-scr
