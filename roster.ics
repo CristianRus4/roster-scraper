@@ -776,10 +776,10 @@ DTSTAMP:20260809T170000Z
 DTSTART:20260814T053000Z
 DTEND:20260814T083000Z
 SUMMARY:ChouChou
-DESCRIPTION:Working with:\n- Aidan Renshaw — Manager\n- Amber Field — F
- OH\n- Cara  O’Brien — FOH\n- Neeve Campbell — FOH\n- Ruby Thomas — 
- Admin\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: ae41f017-4822-48d2-0f0a-
- 08def19097bf
+DESCRIPTION:Working with:\n- Amber Field — Manager\n- Cara  O’Brien —
+  FOH\n- Farina Anchico — FOH\n- Neeve Campbell — FOH\n- Ruby Thomas —
+  Manager\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: ae41f017-4822-48d2-0f
+ 0a-08def19097bf
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
@@ -817,10 +817,9 @@ DTSTAMP:20260809T170000Z
 DTSTART:20260815T053000Z
 DTEND:20260815T083000Z
 SUMMARY:ChouChou
-DESCRIPTION:Working with:\n- Aidan Renshaw — FOH\n- Amber Field — Manag
- er\n- Cara  O’Brien — FOH\n- Ruby Thomas — FOH\n- Sofia Castro — FO
- H\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: 968f35b1-c196-47b3-0f14-08de
- f19097bf
+DESCRIPTION:Working with:\n- Amber Field — Manager\n- Cara  O’Brien —
+  FOH\n- Ruby Thomas — FOH\n- Sofia Castro — FOH\n\nStaff: Cristian Rus\
+ nRole: FOH\nShift ID: 968f35b1-c196-47b3-0f14-08def19097bf
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
