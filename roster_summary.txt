@@ -6,7 +6,3 @@ Date: Thursday, 27/08/2026
 Event name: ChouChou
 Time: 05:30PM -> 08:30PM
 ----------------------------------------
-Date: Tuesday, 01/09/2026
-Event name: ChouChou
-Time: 05:30PM -> 08:30PM
-----------------------------------------
