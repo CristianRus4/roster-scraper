@@ -960,7 +960,7 @@ END:VEVENT
 BEGIN:VEVENT
 UID:travel-3f1a85e0c858987e-5dcce4f1-cab4-4eb8-c4ec-08df0794857c@roster-scr
  aper
-DTSTAMP:20260830T170000Z
+DTSTAMP:20260906T170000Z
 DTSTART:20260908T044500Z
 DTEND:20260908T053000Z
 SUMMARY:Travel to ChouChou
@@ -986,8 +986,8 @@ DTSTART:20260908T053000Z
 DTEND:20260908T080000Z
 SUMMARY:ChouChou
 DESCRIPTION:Working with:\n- Amber Field — FOH\n- Cara  O’Brien — Man
- ager\n- Emily Robinson — Admin\n- Sofia Castro — FOH\n\nStaff: Cristian
-  Rus\nRole: FOH\nShift ID: 5dcce4f1-cab4-4eb8-c4ec-08df0794857c
+ ager\n- Sofia Castro — FOH\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: 5
+ dcce4f1-cab4-4eb8-c4ec-08df0794857c
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
@@ -1000,7 +1000,7 @@ END:VEVENT
 BEGIN:VEVENT
 UID:travel-e981292896324c9d-70d8db3b-8b2d-4685-ffdf-08deb1204388@roster-scr
  aper
-DTSTAMP:20260830T170000Z
+DTSTAMP:20260906T170000Z
 DTSTART:20260913T044500Z
 DTEND:20260913T053000Z
 SUMMARY:Travel to ChouChou
@@ -1026,8 +1026,37 @@ DTSTART:20260913T053000Z
 DTEND:20260913T090000Z
 SUMMARY:ChouChou
 DESCRIPTION:Working with:\n- Amber Field — Manager\n- Cara  O’Brien —
-  FOH\n- Sophie Haddow — FOH\n- Sylvie Lucas — FOH\n\nStaff: Cristian Ru
- s\nRole: FOH\nShift ID: 70d8db3b-8b2d-4685-ffdf-08deb1204388
+  FOH\n- Siena-Rose Remacha — FOH\n- Sylvie Lucas — FOH\n\nStaff: Cristi
+ an Rus\nRole: FOH\nShift ID: 70d8db3b-8b2d-4685-ffdf-08deb1204388
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:Shift starting in 1 hour
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:travel-25a5de717fab176e-3056f8ee-acc9-49d7-4bd3-08df085cdb30@roster-scr
+ aper
+DTSTAMP:20260906T170000Z
+DTSTART:20260915T044500Z
+DTEND:20260915T053000Z
+SUMMARY:Travel to ChouChou
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:25a5de717fab176e-3056f8ee-acc9-49d7-4bd3-08df085cdb30@roster-scraper
+DTSTAMP:20260906T170000Z
+DTSTART:20260915T053000Z
+DTEND:20260915T073000Z
+SUMMARY:ChouChou
+DESCRIPTION:Working with:\n- Maria Vittoria Benetti — Manager\n- Siena-Ro
+ se Remacha — FOH\n- Sofia Castro — FOH\n- Sylvie Lucas — FOH\n\nStaff
+ : Cristian Rus\nRole: FOH\nShift ID: 3056f8ee-acc9-49d7-4bd3-08df085cdb30
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
