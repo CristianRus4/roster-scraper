@@ -1018,7 +1018,7 @@ END:VEVENT
 BEGIN:VEVENT
 UID:travel-25a5de717fab176e-3056f8ee-acc9-49d7-4bd3-08df085cdb30@roster-scr
  aper
-DTSTAMP:20260906T170000Z
+DTSTAMP:20260913T170000Z
 DTSTART:20260915T044500Z
 DTEND:20260915T053000Z
 SUMMARY:Travel to ChouChou
@@ -1043,9 +1043,38 @@ DTSTAMP:20260913T170000Z
 DTSTART:20260915T053000Z
 DTEND:20260915T073000Z
 SUMMARY:ChouChou
+DESCRIPTION:Working with:\n- Maria Vittoria Benetti — Manager\n- Neeve Ca
+ mpbell — FOH\n- Siena-Rose Remacha — FOH\n- Sofia Castro — FOH\n\nSta
+ ff: Cristian Rus\nRole: FOH\nShift ID: 3056f8ee-acc9-49d7-4bd3-08df085cdb30
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:Shift starting in 1 hour
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:travel-37cdc3eba5702a26-f2e6f081-7892-417b-0898-08df0e03a6be@roster-scr
+ aper
+DTSTAMP:20260913T170000Z
+DTSTART:20260922T044500Z
+DTEND:20260922T053000Z
+SUMMARY:Travel to ChouChou
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:37cdc3eba5702a26-f2e6f081-7892-417b-0898-08df0e03a6be@roster-scraper
+DTSTAMP:20260913T170000Z
+DTSTART:20260922T053000Z
+DTEND:20260922T073000Z
+SUMMARY:ChouChou
 DESCRIPTION:Working with:\n- Maria Vittoria Benetti — Manager\n- Siena-Ro
- se Remacha — FOH\n- Sofia Castro — FOH\n- Sylvie Lucas — FOH\n\nStaff
- : Cristian Rus\nRole: FOH\nShift ID: 3056f8ee-acc9-49d7-4bd3-08df085cdb30
+ se Remacha — FOH\n- Sofia Castro — FOH\n- Sophie Haddow — FOH\n\nStaf
+ f: Cristian Rus\nRole: FOH\nShift ID: f2e6f081-7892-417b-0898-08df0e03a6be
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
