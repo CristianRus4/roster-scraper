@@ -1172,9 +1172,9 @@ DTSTART:20261017T043000Z
 DTEND:20261017T073000Z
 SUMMARY:ChouChou
 DESCRIPTION:Working with:\n- Amber Field — FOH\n- Cara  O’Brien — FOH
- \n- Emily Robinson — FOH\n- Maria Vittoria Benetti — Manager\n- Ruby Th
- omas — FOH\n- Siena-Rose Remacha — FOH\n\nStaff: Cristian Rus\nRole: FO
- H\nShift ID: 6d072665-b8b3-4b40-5643-08df2334bd0d
+ \n- Maria Vittoria Benetti — Manager\n- Ruby Thomas — FOH\n- Siena-Rose
+  Remacha — FOH\n\nStaff: Cristian Rus\nRole: FOH\nShift ID: 6d072665-b8b3
+ -4b40-5643-08df2334bd0d
 LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
 STATUS:CONFIRMED
 TRANSP:OPAQUE
@@ -1223,6 +1223,17 @@ TRIGGER:-PT1H
 ACTION:DISPLAY
 DESCRIPTION:Shift starting in 1 hour
 END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:travel-62ee85858080277f-eaf51ca1-719e-4158-356d-08df2ae351da@roster-scr
+ aper
+DTSTAMP:20261011T160000Z
+DTSTART:20261031T034500Z
+DTEND:20261031T043000Z
+SUMMARY:Travel to ChouChou
+LOCATION:1 Taranaki Street\, Te Aro\, Wellington\, 6011
+STATUS:CONFIRMED
+TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:travel-62ee85858080277f-eaf51ca1-719e-4158-356d-08df2ae351da@roster-scr
