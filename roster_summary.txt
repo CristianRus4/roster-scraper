@@ -1,11 +1,3 @@
-Date: Tuesday, 13/10/2026
-Event name: ChouChou
-Time: 05:30PM -> 08:00PM
-----------------------------------------
-Date: Saturday, 17/10/2026
-Event name: ChouChou
-Time: 05:30PM -> 08:30PM
-----------------------------------------
 Date: Tuesday, 20/10/2026
 Event name: ChouChou
 Time: 05:30PM -> 08:30PM
